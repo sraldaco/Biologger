@@ -62,16 +62,13 @@
                     role="button" data-toggle="dropdown" aria-haspopup="true" 
                     aria-expanded="false">
                     <i class="fa fa-shopping-cart"></i> Carrito
-                    <span class="badge border border-white #{carrito.materiales.size() gt 0 ? 'badge-warning' : 'badge-danger'}" 
-                          style="position: absolute;left: 5px;top: 18px;font-size: .5rem;">
-                        #{carrito.materiales.size()}
-                    </span>
+                    <h:outputText  id="cartSize" class="badge border border-white #{carrito.materiales.size() gt 0 ? 'badge-warning' : 'badge-danger'}" 
+                          style="position: absolute;left: 5px;top: 18px;font-size: .5rem;"
+                            value="#{carrito.materiales.size()}"
+                    />
                 </a>
                 <div class="dropdown-menu shadow-sm" aria-labelledby="navbarDropdownMenuLink" style="min-width: 250px;max-width:300px">
-                    <ui:fragment rendered="#{carrito.materiales.size() lt 1}">
-                        <h6 class="dropdown-header">Tu carrito está vacío</h6>
-                    </ui:fragment>
-                    <ui:fragment rendered="#{carrito.materiales.size() gt 0}">
+                    <h:panelGroup id="cartElements" layout="block">
                         <c:forEach varStatus="loop" var="material" items="#{carrito.materiales}"
                                    begin="0" end="#{carrito.materiales.size() gt 4 ? 4 : carrito.materiales.size()}">
                             <div class="text-primary px-2 mx-2">
@@ -85,12 +82,21 @@
                                 </div>
                             </div>
                         </ui:fragment>
-                        <div class="dropdown-divider"></div>
-                        <h:link outcome="/faces/carrito.xhtml"
-                                class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
-                            <i class="fa fa-paper-plane"></i> Ir al carrito
-                        </h:link>
-                    </ui:fragment>
+                    </h:panelGroup>
+                    <h:panelGroup id="cartStatus" layout="block">
+                        <c:choose>
+                            <c:when test="#{carrito.materiales.size() lt 1}">
+                                <h6 class="dropdown-header">Tu carrito está vacío</h6>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="dropdown-divider"></div>
+                                <h:link outcome="/faces/carrito.xhtml"
+                                        class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
+                                    <i class="fa fa-paper-plane"></i> Ir al carrito
+                                </h:link>
+                            </c:otherwise>
+                        </c:choose>
+                    </h:panelGroup>
                 </div>
             </li>
         </ui:fragment>

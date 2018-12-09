@@ -95,13 +95,13 @@
                                        class="btn btn-primary btn-sm pr-2" 
                                        rendered="#{not carrito.seleccionado(material)}" >
                                             <i class="fa fa-plus"></i> Agregar al carrito
-                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id} cartElements cartSize cartStatus" />
                                         </h:commandLink>
                                         <h:commandLink action="#{carrito.eliminarDelCarrito(material)}" 
                                        class="btn btn-danger btn-sm pr-2" 
                                        rendered="#{carrito.seleccionado(material)}" >
                                             <i class="fa fa-times"></i> Eliminar del carrito
-                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id} cartElements cartSize cartStatus" />
                                         </h:commandLink>
                                     </h:form>
                                 </div>
