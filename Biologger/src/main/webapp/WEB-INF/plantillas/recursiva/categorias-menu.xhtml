@@ -1,0 +1,68 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" >
+    <!-- 
+    *******************************************************************
+    *********                                                **********
+    *********             Autor Alex Aldaco                  **********
+    *********                                                **********
+    *******************************************************************
+    -->
+    <ul class="pl-0 categorias-menu" style="list-style:none;">
+        <c:forEach var="categoria" items="#{beanCategoria.categoriasRoot}">
+            <li style="position:relative" class="p-1 px-0 border-bottom #{not empty categoria.hijas ? 'arrow' : ''}">
+                <a class="arrow fa 
+                   #{not empty categoria.hijas ? 'fa-angle-right' : 'fa-minus small'} 
+                   text-dark mr-1"
+                   style="text-decoration:none;"
+                   href="#collapse#{categoria.id}" 
+                   data-toggle="collapse" 
+                   aria-expanded="false" 
+                   aria-controls="collapse#{categoria.id}">
+                </a>
+                <a class="mr-1 #{categoria.id eq param.categoria_id ? 'active' : 'text-dark'}"
+                    href="lista.xhtml?categoria_id=#{categoria.id}">
+                    #{categoria.nombre}
+                 </a><br />
+                <c:if test="#{not empty categoria.hijas}">
+                    <ui:include src="categorias-menu-child.xhtml">
+                        <ui:param name="cat" value="#{categoria}" />
+                    </ui:include>
+                </c:if>
+            </li>
+        </c:forEach>
+    </ul>
+    <script>
+        $(function(){
+            $('.arrow').click(function(){
+                if ($(this).hasClass('fa-angle-down')) {
+                    $(this).removeClass('fa-angle-down')
+                           .addClass('fa-angle-right');
+                } else if ($(this).hasClass('fa-angle-right')) {
+                    $(this).removeClass('fa-angle-right')
+                           .addClass('fa-angle-down');
+                }
+            });
+        });
+        $(window).on('load', function () {
+            $('.categorias-menu > li a.active').each(function() {
+                $(this).mostrarPadre('ul');
+            });
+            $('ul.show').each(function(){
+                $(this).parent('li.arrow').children('.fa')
+                        .removeClass('fa-angle-right')
+                        .addClass('fa-angle-down');
+            });
+        });
+        $.fn.mostrarPadre = function (element) {
+            $(this).parents(element).each(function(){
+                if (!$(this).hasClass('categorias-menu')) {
+                    $(this).addClass('show');
+                }
+            });
+        }
+    </script>   
+</ui:composition>
+

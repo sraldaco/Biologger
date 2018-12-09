@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Despachar pedido ##{pedidoBean.pedido.id}" />
+            <ui:define name="content">
+                <div class="alert alert-danger" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="alert-heading"><i class="fa fa-exclamation-triangle"></i> ¡Atención!</h3>
+                    <p class="mb-0">
+                        Al dar click en quitar material del pedido los cambios se guardarán de forma permanente. 
+                    </p>
+                </div>
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <div class="pedido">
+                    <h5>
+                        Pedido id ##{pedidoBean.pedido.id} - 
+                        <h:outputText value="#{pedidoBean.pedido.fechaPedido}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                        </h:outputText>, 
+                        <a href="#{request.contextPath}/faces/admin/usuario/ver.xhtml?id=#{pedidoBean.pedido.usuario.id}" >
+                            #{pedidoBean.pedido.usuario.correo.trim()}
+                        </a>
+                        <span class="badge #{pedidoBean.pedido.estado eq 'Vencido' ? 'badge-danger' : pedidoBean.pedido.estado eq 'Pendiente' ? 'badge-success' : 'badge-primary'}">
+                            #{pedidoBean.pedido.estado}
+                        </span>
+                    </h5>
+                    <div class="bg-white p-2 px-3 border shadow-sm">
+                        <div  class="border-bottom pb-2">
+                            Detalle del pedido: #{pedidoBean.pedido.materiales.size()} #{pedidoBean.pedido.materiales.size() eq 1 ? 'material' : 'materiales'}.
+                            <ui:fragment  rendered="#{pedido.estado eq 'Pendiente'}">
+                                Expira  
+                                <h:outputText value="#{pedidoBean.expiraInfo(pedidoBean.pedido.fechaPedido)}" class="badge badge-warning">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                </h:outputText>
+                            </ui:fragment>
+                        </div>
+                        <c:forEach varStatus="loop" var="material" items="#{pedidoBean.pedido.materiales}" >
+                            <div class="media pt-2 pb-2 border-bottom">
+                                <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded" width="34px"
+                                            url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-0">
+                                        <a href="#{request.contextPath}/faces/admin/material/ver.xhtml?id=#{material.id}">#{loop.index + 1} - #{material.nombre}</a>
+                                    </h6>
+                                    <p class="mb-0 text-muted small">
+                                        #{trimString.resumen(material.descripcion, 175)}
+                                    </p>
+                                    <h:form id="material#{material.id}">
+                                        <h:commandLink class="btn btn-outline-secondary btn-sm mt-2" action="#{pedidoBean.quitarDelPedido(material,pedidoBean.pedido.materiales.size())}">
+                                            <i class="fa fa-times"></i> Quitar del pedido
+                                            <f:param name="pedido_id" value="#{pedidoBean.id}" />
+                                        </h:commandLink>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </c:forEach>
+                        <h:form id="pedido#{pedidoBean.pedido.id}" class="pt-3 pb-2 form-row">
+                            <ui:fragment rendered="#{pedidoBean.pedido.estado eq 'Pendiente'}">
+                                <div class="form-group col-sm-3">
+                                    <h:outputLabel for="date" value="Fecha de entrega"/>
+                                    <h:inputText id="date" class="datepicker form-control form-control-sm" value="#{pedidoBean.pedido.fechaEntrega }" >
+                                        <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                    </h:inputText>
+                                </div>
+                            </ui:fragment>
+                            <div class="form-group col">
+                                <h:outputLabel value="Acciones"/> <br />
+                                <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.despachar()}" 
+                                               rendered="#{pedidoBean.pedido.estado eq 'Pendiente'}" >
+                                    <i class="fa fa-paper-plane"></i> Procesar
+                                    <f:param name="pedido_id" value="#{pedidoBean.id}" />
+                                </h:commandLink>
+                                <h:commandLink class="btn btn-danger btn-sm mr-1" action="#{pedidoBean.eliminar()}" 
+                                               rendered="#{pedidoBean.pedido.estado eq 'Pendiente'}" >
+                                    <i class="fa fa-trash"></i> Eliminar
+                                </h:commandLink>
+                                <h:commandLink class="btn btn-secondary btn-sm mr-1" action="#{pedidoBean.eliminar()}" 
+                                               rendered="#{pedidoBean.pedido.estado eq 'Activo' or pedidoBean.pedido.estado eq 'Vencido'}" >
+                                    <i class="fa fa-check"></i> Finalizar pedido
+                                    <f:param name="pedido_id" value="#{pedidoBean.id}" />
+                                </h:commandLink>
+                                <h:commandLink class="btn btn-danger btn-sm mr-1" action="#{pedidoBean.guardarYBloquear()}" 
+                                               rendered="#{(pedidoBean.pedido.estado eq 'Activo' or pedidoBean.pedido.estado eq 'Vencido') and pedidoBean.pedido.usuario.activo }" >
+                                    <i class="fa fa-ban"></i> Bloquear usuario
+                                    <f:param name="pedido_id" value="#{pedidoBean.id}" />
+                                </h:commandLink>
+                                <h:commandLink class="btn btn-success btn-sm mr-1" action="#{pedidoBean.desbloquearUsuario()}" 
+                                               rendered="#{(pedidoBean.pedido.estado eq 'Activo' or pedidoBean.pedido.estado eq 'Vencido') and not pedidoBean.pedido.usuario.activo }" >
+                                    <i class="fa fa-check-circle"></i> Desbloquear usuario
+                                    <f:param name="pedido_id" value="#{pedidoBean.id}" />
+                                </h:commandLink>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+                <script src="#{request.contextPath}/faces/resources/js/jquery-ui-1-12-1/jquery-ui.min.js" ></script>
+                  <script>
+                    $( function() {
+                        $( ".datepicker" ).datepicker();
+                    } );
+                </script>
+            </ui:define>
+            
+
+        </ui:composition>
+
+    </body>
+</html>

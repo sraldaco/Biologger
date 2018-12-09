@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/PantallaInicial.xhtml">
+            <ui:param name="tituloDePagina" value="Iniciar sesión" />
+            <ui:param name="backgroundUrl" value="resources/login.jpg" />
+            <ui:define name="contenido">
+                <h:form id="loginForm">
+                   <h:outputLabel value="Usuario" for="usuario" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-user"></i></span>
+                        </div>
+                        <h:inputText id="usuario" value="#{sesion.nombreUsuario}" required="true" requiredMessage="Llena el campo usuario" class="form-control" />
+                    </div>
+                   <h:outputLabel value="Contraseña" for="password" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
+                        </div>
+                        <h:inputSecret id="password" value="#{sesion.contrasena}" required="true" requiredMessage="Llena el campo contraseña" class="form-control" />
+                    </div>
+                   <!--
+                   <small id="emailHelp" class="form-text text-muted mb-2 text-right">
+                        <h:link outcome="restaurar-cuenta?faces-redirect=true" class="text-danger" >
+                            <i class="fa fa-life-ring"></i> Recupera tu contraseña.
+                        </h:link>
+                   </small>
+                   -->
+                   <h:commandLink  action="#{sesion.iniciarSesion()}"  class="btn btn-primary">
+                       <i class="fa fa-sign-in-alt"></i> Inicia sesión
+                   </h:commandLink>
+                   <h:link outcome="registro?faces-redirect=true" class="btn btn-light" >
+                       <i class="fa fa-edit"></i> Regístrate
+                   </h:link>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

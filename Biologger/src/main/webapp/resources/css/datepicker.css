@@ -1,0 +1,76 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 27/11/2018, 09:14:42 PM
+    Author     : alex aldaco
+*/
+.ui-widget-content {
+    background: #000;
+    color:  #f8f9fa;
+    border: 1px solid #000;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+.ui-datepicker {
+    font: inherit;
+}
+
+.ui-datepicker-header { 
+   background: #dc3545 !important; 
+   color: #FFF;
+   text-shadow: none;
+   border: 1px solid #000 !important;
+}
+
+a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
+    box-shadow: none;
+    background-color: rgba(255,255,255,.1); 
+}
+
+.ui-widget-header .ui-icon {
+    background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-right-solid.svg') ;
+    background-position: center;
+    background-size: cover;
+}
+
+.ui-widget-header .ui-icon.ui-icon-circle-triangle-w {
+    background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-left-solid.svg') !important;
+}
+
+.ui-datepicker .ui-datepicker-title {
+    line-height: inherit;
+}
+
+.ui-datepicker .ui-datepicker-calendar .ui-state-default {
+    background-color: #212529;
+    border: 1px solid #6c757d;
+    text-shadow: none;
+    color: #f8f9fa;
+    transition: all ease .8s;
+}
+
+.ui-state-default {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.ui-state-default.ui-state-hover {
+    background-color: #fd7e14 !important;
+    border-color: #ffc107 !important;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+    color: #FFF !important;
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+}
+
+.ui-widget-content .ui-state-disabled {
+    opacity: 1;
+    filter: Alpha(Opacity=100);
+    background-color: #6c757d;
+    border: 2px solid #000;
+}

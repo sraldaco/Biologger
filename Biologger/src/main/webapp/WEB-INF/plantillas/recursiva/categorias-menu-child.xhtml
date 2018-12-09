@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" >
+    <!-- 
+    *******************************************************************
+    *********                                                **********
+    *********             Autor Alex Aldaco                  **********
+    *********                                                **********
+    *******************************************************************
+-->
+    <ul class="collapse pl-3" id="collapse#{cat.id}" style="list-style:none;">
+        <c:forEach items="#{cat.hijas}" var="sub" varStatus="loop">
+            <li style="position:relative" class="p-1 px-0 #{loop.first ? 'border-top mt-2' : ''} #{not loop.last ? 'border-bottom' : ''} #{not empty sub.hijas ? 'arrow' : ''}">
+                <a class="arrow fa  
+                    #{not empty sub.hijas ? 'fa-angle-right' : 'fa-minus small'} 
+                    text-dark mr-1"
+                    style="text-decoration:none;"
+                    href="#collapse#{sub.id}" 
+                    data-toggle="collapse" 
+                    aria-expanded="false" 
+                    aria-controls="collapse#{sub.id}">
+                 </a>
+                <a class="mr-1 #{sub.id eq param.categoria_id ? 'active' : 'text-dark'}"
+                    href="lista.xhtml?categoria_id=#{sub.id}">
+                    #{sub.nombre}
+                 </a>
+                <ui:include src="categorias-menu-child.xhtml">
+                    <ui:param name="cat" value="#{sub}" />
+                </ui:include>
+            </li>
+        </c:forEach>
+    </ul>   
+</ui:composition>

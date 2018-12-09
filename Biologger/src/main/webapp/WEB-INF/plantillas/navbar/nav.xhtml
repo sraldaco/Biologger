@@ -1,0 +1,29 @@
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <nav class="navbar bg-white navbar-light navbar-expand-md shadow-sm border-bottom">
+        <div class="container navs">
+            <ui:include src="brand.xhtml" />
+            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ui:include src="main-menu.xhtml" />
+                <ui:include src="user-menu.xhtml" />
+            </div>
+        </div>
+    </nav>
+    
+</ui:composition>

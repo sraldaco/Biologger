@@ -1,0 +1,241 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 20/10/2018, 01:02:18 AM
+    Author     : alex aldaco
+*/
+@import "_variables.scss";
+@import "../bootstrap4/bootstrap.scss";
+
+
+.biologger-title {font-family: 'Righteous', cursive;}
+
+.ui-messages-error, .ui-messages-fatal, .ui-messages-info, .ui-messages-warn {
+    font-family: inherit !important;
+    .ui-messages-error-detail,
+    .ui-messages-info-detail,
+    .ui-messages-warn-detail,
+    .ui-messages-fatal-detail {
+        display: flex;
+        &:before {
+            display: block;
+            float: left;
+            padding-right: 5px;
+            content: "-";
+        }
+    }
+}
+
+.ui-messages-error, .ui-messages-fatal {
+    background-color: $danger;
+    color: $white;
+}
+
+.ui-messages-info {
+    background-color: $success;
+    color: $white;
+}
+
+.ui-messages-warn {
+    background-color: $warning;
+    color: $black;
+}
+
+.rounded-not-left {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.rounded-not-right {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.user {
+    &.name {margin-bottom: -5px;}
+}
+
+.container {
+    &.navs {
+        position: relative;
+        .sesion-user-data {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            z-index: 10000;
+        }
+    }
+}
+
+.bg-black {background-color: $black;}
+.bg-tblack {background-color: rgba(0,0,0,.15);}
+
+.navbar-admin {padding-top: 0; padding-bottom: 0;}
+
+.card-columns {
+  @include media-breakpoint-only(sm) {
+    column-count: 2;
+  }
+   @include media-breakpoint-only(md) {
+    column-count: 2;
+  }
+  @include media-breakpoint-only(lg) {
+    column-count: 3;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 4;
+  }
+}
+
+.card-columns.catalog {
+  @include media-breakpoint-only(sm) {
+    column-count: 2;
+  }
+   @include media-breakpoint-only(md) {
+    column-count: 2;
+  }
+  @include media-breakpoint-only(lg) {
+    column-count: 3;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 3;
+  }
+}
+
+.custom-file {
+  overflow: hidden;
+}
+.custom-file-label::after {
+    display: none;
+}
+
+.custom-file {
+  overflow: hidden;
+}
+.custom-select {-webkit-appearance: none;-moz-appearance: none;appearance: none;}
+.custom-file-label::after {
+    display: none;
+}
+.nav-tabs {
+    .nav-link.active.bg-light {
+        border-bottom-color:  #f8f9fa;
+    } 
+}
+
+.ui-widget {
+    font: inherit;
+}
+
+.ui-datepicker {
+    background: $white;
+    color:  $secondary;
+    border: 1px solid $secondary;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    .ui-widget-header .ui-icon {
+        background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-right-solid.svg') ;
+        background-position: center;
+        background-size: cover;
+    }
+    .ui-widget-header .ui-icon.ui-icon-circle-triangle-w {
+        background-image: url('/Biologger/faces/resources/assets/images/datapicker/chevron-circle-left-solid.svg') !important;
+    }
+    .ui-datepicker-title {
+        line-height: inherit;
+    }
+    .ui-datepicker-calendar .ui-state-default {
+        background-color: $light;
+        border: 1px solid $secondary;
+        text-shadow: none;
+        color: $secondary;
+        transition: all ease .8s;
+    }
+    .ui-state-default {
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+    .ui-state-default.ui-state-hover {
+        background-color: $warning !important;
+        border-color: $orange !important;
+        color: $black !important;
+    }
+    .ui-state-active, .ui-state-active {
+        color: $white !important;
+        background-color: $danger !important;
+        border-color: $orange !important;
+    }
+    .ui-state-disabled {
+        opacity: 1;
+        filter: Alpha(Opacity=100);
+        background-color: $secondary;
+        border: 2px solid $white;
+    }
+}
+
+.ui-datepicker-header { 
+   background: #dc3545 !important; 
+   color: $white;
+   text-shadow: none;
+   border: 1px solid $secondary !important;
+}
+
+a.ui-datepicker-prev:hover, a.ui-datepicker-next:hover {
+    box-shadow: 0 0 4px $orange;
+} 
+
+.ui-selectcheckboxmenu-trigger {
+    display: none;
+}
+
+.ui-selectcheckboxmenu-multiple-container{
+    &.ui-inputfield {
+        box-shadow: none;
+        display: inline-block;
+        width: 100%;
+        height: calc(2.1rem + 2px);
+        padding: .375rem 1.75rem .375rem .75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center;
+        background-size: auto auto;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-top-color: rgb(206, 212, 218);
+        border-right-color: rgb(206, 212, 218);
+        border-bottom-color: rgb(206, 212, 218);
+        border-left-color: rgb(206, 212, 218);
+        border-radius: .25rem;
+        appearance: none;
+    }
+    &.ui-inputfield:focus {
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 .2rem rgba(128,189,255,.5);
+    }
+}
+
+.ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-list-item  {
+    padding: 0;
+    margin-bottom: .2rem;
+}
+    
+.ui-selectcheckboxmenu-header {
+    background: $light;
+    padding: .4rem;
+}
+
+.ui-selectcheckboxmenu-token{
+    padding: 0;
+    margin: 0;
+    margin-right: .2rem;
+    box-shadow: none;
+    background: $gray-300;
+    color: $dark;
+    font-weight: normal;
+    font-size: .85rem;
+    text-shadow: none;
+}

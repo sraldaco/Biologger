@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/PantallaInicial.xhtml">
+            <ui:param name="tituloDePagina" value="Restaurar contraseña" />
+            <ui:param name="backgroundUrl" value="resources/restore.jpg" />
+            <ui:define name="contenido">
+                <h:form id="restoreForm">
+                    <h:outputLabel value="Correo electrónico" for="correo" />
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <h:inputText id="correo" value="#{usuarioControlador.correo}" required="true" 
+                                     requiredMessage="El campo correo es obligatorio" 
+                                     validatorMessage="#{usuarioControlador.correo} is not valid" 
+                                     class="form-control">
+                            <f:passThroughAttribute name="type" value="email"/>
+                            <f:passThroughAttribute name="placeholder" value="@ciencias.unam.mx"/>
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@ciencias.unam.mx" />
+                        </h:inputText>
+                    </div>
+
+                   <p id="emailHelp" class="small form-text text-muted mb-3">
+                       Ingresa tu correo de <em>@ciencias.unam.mx</em> asociado a tu cuenta de usuario para enviarte las instrucciones para restaurar tu contraseña. 
+                       Esposible que tengas que revisar la carpeta de ¡spam!
+                   </p>
+                    <h:commandLink  action="#{usuario.autenticar()}"  class="btn btn-danger" >
+                       <i class="fa fa-life-ring"></i> Recupera tu contraseña
+                   </h:commandLink>
+                   <h:link outcome="iniciar-sesion?faces-redirect=true" class="btn btn-light" >
+                       <i class="fa fa-sign-in-alt"></i> Inicia sesión
+                   </h:link>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

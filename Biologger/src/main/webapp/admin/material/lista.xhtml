@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Ver Materiales</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de Materiales"/>
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                
+                <!--<h:form>
+                    <div class="form-group col">
+                        <h:outputLabel for="maxresultados" value="Resultados"/>
+                        <h:selectOneMenu value="#{mats.numMateriales}" id="maxresultados" class="custom-select custom-select-sm" >
+                            <f:selectItem itemValue="10" itemLabel="10 resultados"/>
+                            <f:selectItem itemValue="25" itemLabel="25 resultados" />
+                            <f:selectItem itemValue="50" itemLabel="50 resultados" />
+                        </h:selectOneMenu>
+                    </div>
+                </h:form>-->
+                
+                <p>
+                    <h:link class="btn btn-outline-success" outcome="agregar.xhtml"> 
+                        <i class="fa fa-plus"></i> Agregar nuevo material
+                    </h:link>
+                </p>
+                <div class="card-columns">
+                    
+                    <c:forEach var="material" items="#{mats.materiales}" >
+                        <div class="card shadow-sm">
+                            <h:graphicImage 
+                                value="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" 
+                                class="card-img-top"
+                                />
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate">
+                                    <h:link class="text-primary" outcome="ver.xhtml">
+                                        #{material.nombre}
+                                        <f:param name="id" value="#{material.id}"/>
+                                    </h:link>
+                                </h5>
+                                <p class="card-text">
+                                    <div style="height:50px">
+                                        <i class="fa fa-flask"></i>
+                                        <strong>Nombre:</strong><br />
+                                        #{trimString.resumen(material.nombre,50)}<br />
+                                    </div>
+                                    <br></br>
+                                    <div style="height:125px">
+                                        <i class="fa fa-align-justify"></i>
+                                        <strong>Descripción:</strong><br />
+                                        <span class="d-block">
+                                            #{trimString.resumen(material.descripcion,100)}
+                                        </span>   
+                                    </div>
+                                    <div>
+                                        <span class="#{material.estado eq 'Disponible' ? 'badge badge-pill badge-success': 'badge badge-pill badge-warning'}">#{material.estado}</span>
+                                    </div>
+                                </p>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <h:form id="material#{material.id}">
+                                     <li class="list-group-item">
+                                        <h:link class="text-primary" outcome="editar.xhtml">
+                                            <i class="fa fa-edit"></i>
+                                            Editar Material
+                                            <f:param name="id" value="#{material.id}"/>
+                                        </h:link>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h:commandLink class="text-danger" action="#{mats.eliminarMateriales(material)}">
+                                            <i class="fa fa-trash"></i>
+                                            Eliminar Material
+                                        </h:commandLink>
+                                    </li>
+                                </h:form>
+                            </ul>
+                        </div>
+                    </c:forEach>
+                </div>
+                <h:form>   
+                    <nav aria-label="..." class="text-center">
+                        <ul class="pagination">
+                          <li class="#{mats.pagina eq 1 ? 'page-item disabled' : 'page-item'}">                            
+                            <h:commandLink class="page-link" action="#{mats.paginaAnterior()}">
+                                Previous
+                            </h:commandLink>
+                          </li>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina-2 gt 0}">
+                              <li class="page-item">
+                                  <h:commandLink class="page-link" action="#{mats.primerPagina()}">
+                                    1
+                                  </h:commandLink>
+                              </li>
+                          </h:panelGroup>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina-3 gt 0}">
+                              <li class="page-item">
+                                  <div class="page-link">
+                                    ...
+                                  </div>
+                              </li>
+                          </h:panelGroup>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina != 1}">
+                            <li class="page-item">
+                                <h:commandLink class="page-link" action="#{mats.paginaAnterior()}">
+                                    #{mats.pagina-1}
+                                </h:commandLink>
+                            </li>
+                          </h:panelGroup>
+                          <li class="page-item active">
+                            <h:commandLink class="page-link">
+                                #{mats.pagina}<span class="sr-only">(current)</span>
+                            </h:commandLink>
+                          </li>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina+1 le mats.maximaPagina}">
+                            <li class="page-item">                             
+                                <h:commandLink class="page-link" action="#{mats.paginaSiguiente()}">
+                                    #{mats.pagina+1}
+                                </h:commandLink>
+                            </li>
+                          </h:panelGroup>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina+3 le mats.maximaPagina}">
+                              <li class="page-item">
+                                  <div class="page-link">
+                                    ...
+                                  </div>
+                              </li>
+                          </h:panelGroup>
+                          <h:panelGroup layout="block" rendered="#{mats.pagina+2 le mats.maximaPagina}">
+                              <li class="page-item">
+                                  <h:commandLink class="page-link" action="#{mats.ultimaPagina()}">
+                                      #{mats.maximaPagina}
+                                  </h:commandLink>
+                              </li>
+                          </h:panelGroup>
+                        <li class="#{mats.pagina eq mats.maximaPagina? 'page-item disabled': 'page-item'}">
+                          <h:commandLink class="page-link" action="#{mats.paginaSiguiente()}">
+                              Next
+                          </h:commandLink>
+                        </li>
+                        </ul>
+                    </nav>
+                </h:form>
+                
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

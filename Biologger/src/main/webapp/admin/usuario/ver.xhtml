@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+    <!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="#{beanUsuarios.usuario.nombre}" />
+            <ui:define name="content">
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item ml-3">
+                      <a class="nav-link active bg-light" href="#">Ver</a>
+                    </li>
+                    <li class="nav-item mr-3">
+                        <a class="nav-link" href="editar.xhtml?id=#{beanUsuarios.usuario.id}">Editar</a>
+                    </li>
+                </ul>
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <div class="bg-white p-3 border shadow-sm">
+                    <div class="row">
+                        <div class="col-sm-4 mb-3 mb-sm-0">
+                            <div class="bg-light h-100 p-3">
+                                <h:graphicImage 
+                                    value="#{beanUsuarios.usuario.foto != null ? beanUsuarios.usuario.foto : '/resources/assets/images/user/icon.png' }" 
+                                    class="w-100 img-fluid border border-white rounded shadow" />
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <p><strong>Id</strong><br />#{beanUsuarios.usuario.id}</p>
+                            <p><strong>Nombre</strong><br />#{beanUsuarios.usuario.nombre}</p>
+                            <p><strong>Usuario</strong><br />#{beanUsuarios.usuario.nombreUsuario}</p>
+                            <p><strong>Correo</strong><br />#{beanUsuarios.usuario.correo}</p>
+                            <p><strong>Rol</strong><br />
+                                #{beanUsuarios.usuario.rol == 1 ? "Administrador" : 
+                                  beanUsuarios.usuario.rol == 2 ? "Profesor" : "Usuario normal" }
+                            </p>
+                            <!--
+                                <c:if test="#{beanUsuarios.usuario.rol == 2}">
+                                    <p><strong>Número de trabajador</strong><br />#{beanUsuarios.usuario.profesor.numero}</p>
+                                </c:if>
+                                -->
+                            <p><strong>Estado</strong><br />#{beanUsuarios.usuario.activo ? "Activo" : "Bloqueado" }</p>
+                            <p><strong>Fecha de Registro</strong><br />
+                                        <h:outputText value="#{beanUsuarios.usuario.fechaRegistro}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                        </h:outputText>
+                            </p>
+                            <c:if test="#{not empty beanUsuarios.usuario.ultimoAcceso}">
+                                <p><strong>Último acceso</strong><br />
+                                    <h:outputText value="#{beanUsuarios.usuario.ultimoAcceso}">
+                                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                            </h:outputText>
+                                </p>
+                            </c:if>
+                            <p><strong>Última actualización</strong><br />
+                                <h:outputText value="#{beanUsuarios.usuario.ultimaActualizacion}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                        </h:outputText>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

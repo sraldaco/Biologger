@@ -1,0 +1,99 @@
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+        
+      <ul class="navbar-nav">
+        <li class="nav-item">
+            <h:link 
+                class="nav-link border-bottom #{view.viewId eq '/index.xhtml' ? 'active border-success' : 'border-white' }" 
+                outcome="/faces/index.xhtml">
+                <i class="fa fa-home"></i>
+                Inicio
+            </h:link>
+        </li>
+        <li class="nav-item">
+            <h:link 
+                class="nav-link border-bottom #{view.viewId eq '/catalogo/lista.xhtml' or 
+                                                view.viewId eq '/catalogo/material.xhtml' ? 'active border-success' : 'border-white' }"
+                outcome="/faces/catalogo/lista.xhtml">
+                <i class="fa fa-tasks"></i>
+                Catálogo
+            </h:link>
+        </li>
+        <ui:fragment rendered="#{sesion.usuario.rol eq 2}">
+            <li class="nav-item">
+                <h:link 
+                    class="nav-link border-bottom #{view.viewId eq '/kits/mis-kits.xhtml' or
+                                                    view.viewId eq '/kits/agregar.xhtml' or
+                                                    view.viewId eq '/kits/editar.xhtml' or
+                                                    view.viewId eq '/kits/eliminar.xhtml' or
+                                                    view.viewId eq '/kits/ver.xhtml'
+                                                    ? 'active border-success' : 'border-white' }" 
+                    outcome="/faces/kits/mis-kits.xhtml">
+                    <i class="fa fa-box-open"></i>
+                    Kits
+                </h:link>
+            </li>
+        </ui:fragment>
+        <ui:fragment rendered="#{sesion.usuario.rol gt 1}">
+            <li class="nav-item">
+                <h:link  
+                    class="nav-link border-bottom #{view.viewId eq '/mis-pedidos.xhtml' ? 'active border-success' : 'border-white' }"
+                    outcome="/faces/mis-pedidos.xhtml" >
+                    <i class="fa fa-star"></i>
+                    Pedidos
+                </h:link>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown border-bottom #{view.viewId eq '/carrito.xhtml' ?'active border-success' : 'border-white' }" 
+                   href="#" 
+                   id="navbarDropdownMenuLink" 
+                    role="button" data-toggle="dropdown" aria-haspopup="true" 
+                    aria-expanded="false">
+                    <i class="fa fa-shopping-cart"></i> Carrito
+                    <span class="badge border border-white #{carrito.materiales.size() gt 0 ? 'badge-warning' : 'badge-danger'}" 
+                          style="position: absolute;left: 5px;top: 18px;font-size: .5rem;">
+                        #{carrito.materiales.size()}
+                    </span>
+                </a>
+                <div class="dropdown-menu shadow-sm" aria-labelledby="navbarDropdownMenuLink" style="min-width: 250px;max-width:300px">
+                    <ui:fragment rendered="#{carrito.materiales.size() lt 1}">
+                        <h6 class="dropdown-header">Tu carrito está vacío</h6>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{carrito.materiales.size() gt 0}">
+                        <c:forEach varStatus="loop" var="material" items="#{carrito.materiales}"
+                                   begin="0" end="#{carrito.materiales.size() gt 4 ? 4 : carrito.materiales.size()}">
+                            <div class="text-primary px-2 mx-2">
+                                <i class="fa fa-flask text-muted small mr-2"></i> #{material.nombre}
+                            </div>
+                        </c:forEach>
+                        <ui:fragment rendered="#{carrito.materiales.size() gt 5}">
+                            <div class="px-2 mx-2 text-right">
+                                <div class="badge badge-light badge-pill p-1 px-2">
+                                    #{carrito.materiales.size()- 5} elementos más...
+                                </div>
+                            </div>
+                        </ui:fragment>
+                        <div class="dropdown-divider"></div>
+                        <h:link outcome="/faces/carrito.xhtml"
+                                class="dropdown-item #{view.viewId eq '/carrito.xhtml' ? 'active' : '' } px-3">
+                            <i class="fa fa-paper-plane"></i> Ir al carrito
+                        </h:link>
+                    </ui:fragment>
+                </div>
+            </li>
+        </ui:fragment>
+    </ul>
+    
+</ui:composition>

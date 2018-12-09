@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <h:body>
+        <ui:composition template="./../WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="Sidebar" value="true" />
+            <ui:param name="tituloDePagina" value="Catálogo de materiales" />
+            <ui:define name="content" >
+                <h1 class="titulo text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:form class="mb-3">
+                    <div  class="form-row">
+                        <div class="form-group col-12">
+                            <h:outputLabel for="burcar"  value="Buscar" />
+                            <h:inputText value="#{catalogo.buscar}" class="form-control" id="buscar" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h:outputLabel for="orden"  value="Orden" />
+                            <h:selectOneMenu value="#{catalogo.orden}" id="orden" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="id" itemLabel="ID del material" />
+                                <f:selectItem itemValue="nombre" itemLabel="Nombre" />
+                                <f:selectItem itemValue="descripcion" itemLabel="Descripcion" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col">
+                            <h:outputLabel for="modo"  value="Modo" />
+                            <h:selectOneMenu value="#{catalogo.modo}" id="modo" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="ASC" itemLabel="Ascendente" />
+                                <f:selectItem itemValue="DESC" itemLabel="Descendente" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="maxresultados" value="Resultados"/>
+                            <h:selectOneMenu value="#{catalogo.maxResultados}" id="maxresultados" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="12" itemLabel="12 resultados" />
+                                <f:selectItem itemValue="24" itemLabel="24 resultados" />
+                                <f:selectItem itemValue="48" itemLabel="48 resultados" />
+                                <f:selectItem itemValue="96" itemLabel="96 resultados" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <h:commandLink action="#{catalogo.filtrar()}" class="btn btn-primary" >
+                        <i class="fa fa-filter"></i> Filtrar
+                    </h:commandLink>
+                </h:form>
+                <ui:fragment rendered="#{catalogo.totalResultados eq 0}">
+                    <h2 class="display-3 text-danger text-center">OoopSss!</h2>
+                    <h3 class="text-center">Lo sentimos, no hay resultados para esta consulta.</h3>
+                </ui:fragment>
+                <ui:fragment rendered="#{catalogo.totalResultados gt 0}">
+                    <ui:include src="./../WEB-INF/plantillas/block/add-to-kit.xhtml" />
+                    <hr />
+                    <h6>
+                        Hay #{catalogo.totalResultados} resultados en esta lista de usuarios. 
+                        Estás viendo la página #{catalogo.pagina} de #{catalogo.totalPaginas} 
+                        (#{catalogo.maxResultados} resultados por página).
+                    </h6>
+                    <hr />
+                    <div id="catalogo" class="card-columns catalog">
+                        <c:forEach var="material" items="#{catalogo.materiales}" varStatus="loop" >
+                            <div class="card shadow-sm mb-4">
+                                <h:link outcome="material.xhtml?id=#{material.id}">
+                                    <h:graphicImage 
+                                        value="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" 
+                                        class="card-img-top w-100"
+                                    />
+                                </h:link>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <h:link outcome="material.xhtml?id=#{material.id}" class="text-dark" >
+                                            <i class="fa fa-flask"></i> #{material.nombre}
+                                        </h:link>
+                                    </h5>
+                                    <p class="card-text">
+                                        #{trimString.resumen(material.descripcion,200)}
+                                    </p>
+                                    <h:form id="material#{material.id}" rendered="#{sesion.usuario.rol gt 1 }">
+                                        <h:commandLink action="#{carrito.agregarAlCarrito(material)}" 
+                                       class="btn btn-primary btn-sm pr-2" 
+                                       rendered="#{not carrito.seleccionado(material)}" >
+                                            <i class="fa fa-plus"></i> Agregar al carrito
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
+                                        </h:commandLink>
+                                        <h:commandLink action="#{carrito.eliminarDelCarrito(material)}" 
+                                       class="btn btn-danger btn-sm pr-2" 
+                                       rendered="#{carrito.seleccionado(material)}" >
+                                            <i class="fa fa-times"></i> Eliminar del carrito
+                                            <f:ajax execute="material#{material.id}" render="material#{material.id}" />
+                                        </h:commandLink>
+                                    </h:form>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </ui:fragment>
+                    <c:if test="#{catalogo.totalPaginas gt 1}">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <c:if test="#{catalogo.pagina gt 1}">
+                                    <li class="page-item shadow-sm">
+                                        <h:link class="page-link" outcome="lista.xhtml">
+                                            <i class="fa fa-chevron-left"></i>
+                                            <f:param name="pagina" value="#{catalogo.pagina - 1}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:if>
+                                <c:forEach var="loop" 
+                                           begin="#{catalogo.pagina gt 4 ? 
+                                                        catalogo.totalPaginas - catalogo.pagina gt 3 ? 
+                                                        catalogo.pagina - 3 : catalogo.totalPaginas - 6 gt 0 ?
+                                                            catalogo.totalPaginas - 6
+                                                        :
+                                                            1
+                                                   : 
+                                                        1}" 
+                                           end="#{catalogo.pagina gt 4 ? 
+                                                    catalogo.pagina + 3 gt catalogo.totalPaginas ? 
+                                                        catalogo.totalPaginas : catalogo.pagina + 3 
+                                                    : 
+                                                     catalogo.totalPaginas lt 7 ? 
+                                                        catalogo.totalPaginas : 7
+                                                }">
+                                    <li class="page-item shadow-sm #{catalogo.pagina == loop ? 'active':''}">
+                                        <h:link value="#{loop}" class="page-link" outcome="lista.xhtml">
+                                            <f:param name="pagina" value="#{loop}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="#{catalogo.pagina lt catalogo.totalPaginas}">
+                                    <li class="page-item shadow-sm">
+                                        <h:link class="page-link" outcome="lista.xhtml">
+                                            <i class="fa fa-chevron-right"></i>
+                                            <f:param name="pagina" value="#{catalogo.pagina + 1}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.categoria_id}">
+                                                <f:param name="categoria_id" value="#{param.categoria_id}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.buscar}">
+                                                <f:param name="buscar" value="#{param.buscar}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </c:if>
+                
+            </ui:define>
+            <ui:define name="sidebar" >
+                <h3 class="text-secondary border-bottom pt-2 pb-2 mb-3">
+                    <i class="fa fa-tags small"></i> Categorías
+                </h3>
+                <ui:include src="./../WEB-INF/plantillas/recursiva/categorias-menu.xhtml" />
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

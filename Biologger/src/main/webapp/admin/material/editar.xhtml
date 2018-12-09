@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="#{editarMaterial.nombre}" />
+            <ui:define name="content">
+                <h1><em>Editar el material</em>: #{tituloDePagina}</h1>
+                
+                <h:panelGroup id="elimina" rendered="#{editarMaterial.foto != null}" class="d-block mb-3" >
+                    <h:graphicImage class="rounded float-left mr-3" height="70px" url="#{editarMaterial.foto}" />
+                    <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{editarMaterial.foto != null}">
+                        <h:outputLabel value="Fotografía" for="foto" />
+                        <div class="d-flex">
+                            <h:commandLink action="#{editarMaterial.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-backspace"></i> Eliminar
+                            </h:commandLink>
+                        </div>
+                    </h:form>
+                </h:panelGroup>
+                
+                <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{editarMaterial.foto == null}">
+                                        <h:outputLabel value="Fotografía" for="foto" />
+                    <div class="d-flex">
+                        <div class="custom-file">
+                            <h:inputFile value="#{editarMaterial.file}" class="custom-file-input" id="foto"
+                                         validator="UploadImageValidator" required="true"
+                                         requiredMessage="No has seleccionado ninguna fotografía" > 
+                                <f:passThroughAttribute name="accept" value="image/*" />
+                            </h:inputFile>
+                            <label class="custom-file-label rounded-not-right" for="foto">Seleccionar</label>
+                        </div>
+                        <h:commandLink action="#{editarMaterial.handleUpload()}" class="btn btn-primary disabled rounded-not-left"
+                                        title="¡Sube la imagen!">
+                            <i class="fa fa-upload"></i> Subir
+                        </h:commandLink>
+                    </div>
+                </h:form>
+
+                    <h:form>
+                        <div>
+                            <h:outputLabel for="nombre" value="Nombre:" />
+                            <p:inputText value="#{editarMaterial.nombre}" id="nombre"
+                                    required="true" class="form-control mb-3" requiredMessage="No has ingresado un nombre de material"/> 
+                        </div>
+                        <div>
+                            <h:outputLabel for="descripcion" value="Descripcion:" />
+                            <pe:ckEditor value="#{editarMaterial.descripcion}" id="descripcion" required="true" width="100%" requiredMessage="No has ingresado ninguna descripción"/>
+                        </div>
+                        <div>
+                            <h:outputLabel for="categorias" value="Categorias:" />
+                            <p:selectCheckboxMenu id="multiple" value="#{editarMaterial.categoriasSeleccionadas}" label="Categorias" multiple="true"
+                                                  appendTo="@this" class="w-100 p-0 shadow-none border-0" panelStyleClass="border shadow-lg p-2" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria"
+                                                converter="catConverter">
+                                <f:selectItems value="#{editarMaterial.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" class="categorias-item"/>
+                            </p:selectCheckboxMenu>
+                        </div>
+                        <br></br>
+                        <div>
+                            <h:outputLabel for="estado" value="Estado:"/>
+                            <h:selectOneMenu value="#{editarMaterial.estado}" class="custom-select">
+                                <f:selectItem itemValue="En mantenimiento" />
+                                <f:selectItem itemValue="En préstamo" />
+                                <f:selectItem itemValue="No disponible" />
+                                <f:selectItem itemValue="Disponible" />
+                            </h:selectOneMenu>
+                        </div>
+                        
+                        <br></br>
+                        <div>
+                            <h:commandLink action="#{editarMaterial.editarMaterial()}" class="#{editarMaterial.foto==null?'btn btn-primary disabled':'btn btn-primary'}" disabled="#{editarMaterial.foto==null}">
+                                <i class="fa fa-edit"></i> Guardar
+                            </h:commandLink>
+                            <h:link value="Cancelar" class="btn btn-link" outcome="lista.xhtml" />
+                        </div>
+                    </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

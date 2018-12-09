@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" >
+    <!-- 
+    *******************************************************************
+    *********                                                **********
+    *********             Autor Alex Aldaco                  **********
+    *********                                                **********
+    *******************************************************************
+    -->
+    <ui:fragment rendered="#{sesion.usuario.rol eq 2}">
+        <a href="#" class="d-block mb-3 text-right" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-plus"></i> Agregar esta página a un kit
+         </a>
+        <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content shadow-lg bg-light border-secondary">
+                    <h:form>
+                            <div class="modal-header">
+                                <h5 class="modal-title">Agregar esta página a un kit</h5>
+                            </div>
+                        <div class="modal-body">
+                            <ui:fragment rendered="#{sesion.usuario.kits.size() eq 0}">
+                                <div class="alert alert-dark">
+                                    <h5>No tienes ningún kit.</h5>
+                                    <p class="mb-0">
+                                        <i class="fa fa-link small"></i> Primero debes
+                                        <h:link outcome="/faces/kits/agregar.xhtml" value="agregar un kit" class="alert-link" />.
+                                    </p>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{sesion.usuario.kits.size() gt 0}">
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <h:outputLabel for="kit" value="Kit"/>
+                                        <h:selectOneMenu id="kit" class="custom-select" value="#{beanKit.idKit}">
+                                            <f:selectItems var="kit" value="#{sesion.usuario.kits}" itemValue="#{kit.id}" itemLabel="#{kit.titulo}"/> 
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <h:outputLabel for="title" value="Título"/>
+                                        <h:inputText id="title" class="title form-control" value="#{beanKit.titulo}" />
+                                    </div>
+                                    <div class="form-group col-md-4 d-none">
+                                        <div class="separador">
+                                            #{request.contextPath}
+                                        </div>
+                                        <h:outputLabel for="url" value="url"/>
+                                        <h:inputText id="url" class="url form-control" value="#{beanKit.url }" />
+                                    </div>
+                                </div>
+                            </ui:fragment>
+                        </div>
+                        <div class="modal-footer">
+                            <h:commandLink class="btn btn-primary" rendered="#{sesion.usuario.kits.size() gt 0}" action="#{beanKit.agregarAKit()}" >
+                                <i class="fa fa-link"></i> Adjuntar enlace
+                            </h:commandLink>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                <i class="fa fa-times"></i> Cancelar
+                            </button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function() {
+                var title = $('.titulo').text().trim();
+                var url = $(location).attr('href');
+                var separador = $('.separador').text().trim();
+                url = url.split(separador);
+                $('.title').val(title);
+                $('.url').val(url[1]);
+            });
+        </script> 
+    </ui:fragment>
+      
+</ui:composition>

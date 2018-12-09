@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de pedidos" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:form class="mb-3">
+                    <div  class="form-row">
+                        <div class="form-group col-sm-3">
+                            <h:outputLabel for="estado" value="Estado"/>
+                            <h:selectOneMenu value="#{pedidoBean.estado}" id="estado" class="custom-select" >
+                                <f:selectItem itemValue="" itemLabel="— Seleccionar —" />
+                                <f:selectItem itemValue="Pendiente" itemLabel="Pendiente" />
+                                <f:selectItem itemValue="Activo" itemLabel="Activo" />
+                                <f:selectItem itemValue="Vencido" itemLabel="Vencido" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="correo"  value="Correo" />
+                            <h:inputText value="#{pedidoBean.correo}" class="form-control" id="correo" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h:outputLabel for="orden"  value="Orden" />
+                            <h:selectOneMenu value="#{pedidoBean.orden}" id="orden" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="id" itemLabel="# pedido" />
+                                <f:selectItem itemValue="correo" itemLabel="Correo del usuario" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col">
+                            <h:outputLabel for="modo"  value="Modo" />
+                            <h:selectOneMenu value="#{pedidoBean.modo}" id="modo" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="ASC" itemLabel="Ascendente" />
+                                <f:selectItem itemValue="DESC" itemLabel="Descendente" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="maxresultados" value="Resultados"/>
+                            <h:selectOneMenu value="#{pedidoBean.maxResultados}" id="maxresultados" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="10" itemLabel="10 resultados" />
+                                <f:selectItem itemValue="20" itemLabel="20 resultados" />
+                                <f:selectItem itemValue="50" itemLabel="50 resultados" />
+                                <f:selectItem itemValue="100" itemLabel="100 resultados" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <h:commandLink action="#{pedidoBean.filtrar()}" class="btn btn-primary" >
+                        <i class="fa fa-filter"></i> Filtrar
+                    </h:commandLink>
+                </h:form>
+                <hr />
+                <h6>Hay #{pedidoBean.totalResultados} resultados en esta lista de usuarios. 
+                    Estás viendo la página #{pedidoBean.pagina} de #{pedidoBean.totalPaginas} 
+                    (#{pedidoBean.maxResultados} resultados por página).
+                </h6>
+                <hr />
+                <c:forEach varStatus="plop" var="pedido" items="#{pedidoBean.pedidos}">
+                    <div class="pedido #{not plop.last ? 'mb-4' : ''}">
+                        <h5>
+                            Pedido id ##{pedido.id} - 
+                            <h:outputText value="#{pedido.fechaPedido}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                            </h:outputText>, 
+                            <h:link outcome="/faces/admin/usuario/ver.xhtml?id=#{pedido.usuario.id}">
+                                #{pedido.usuario.correo.trim()}
+                            </h:link> 
+                            <span class="badge #{pedido.estado eq 'Vencido' ? 'badge-danger' : pedido.estado eq 'Pendiente' ? 'badge-success' : 'badge-primary'}">
+                                #{pedido.estado}
+                            </span>
+                        </h5>
+                        <div class="bg-white p-2 px-3 border shadow-sm">
+                            <div  class="border-bottom pb-2">
+                                Detalle del pedido: #{pedido.materiales.size()} #{pedido.materiales.size() eq 1 ? 'material' : 'materiales'}.
+                                <ui:fragment  rendered="#{pedido.estado eq 'Pendiente'}">
+                                    Expira  
+                                    <h:outputText value="#{pedidoBean.expiraInfo(pedido.fechaPedido)}" class="badge badge-warning">
+                                        <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                    </h:outputText>
+                                </ui:fragment>
+                            </div>
+                            <c:forEach varStatus="loop" var="material" items="#{pedido.materiales}" >
+                                <div class="media pt-2 pb-2 border-bottom">
+                                    <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded" width="34px"
+                                                url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
+                                    <div class="media-body">
+                                        <h6 class="mt-0 mb-0">
+                                            <a href="#{request.contextPath}/faces/admin/material/ver.xhtml?id=#{material.id}">#{loop.index + 1} - #{material.nombre}</a>
+                                        </h6>
+                                        <p class="mb-0 text-muted small">
+                                            #{trimString.resumen(material.descripcion, 175)}
+                                        </p>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                            <h:form id="pedido#{pedido.id}" class="pt-3 pb-2">
+                                <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
+                                               rendered="#{pedido.estado eq 'Pendiente'}" >
+                                    <i class="fa fa-paper-plane"></i> Despachar
+                                </h:commandLink>
+                                <h:commandLink class="btn btn-primary btn-sm mr-1" action="#{pedidoBean.prepararDespacho(pedido)}" 
+                                               rendered="#{pedido.estado eq 'Activo' or pedido.estado eq 'Vencido'}" >
+                                    <i class="fa fa-tasks"></i> Recibir
+                                </h:commandLink>
+                            </h:form>
+                        </div>
+                    </div>
+                </c:forEach>
+                <c:if test="#{pedidoBean.totalPaginas gt 1}">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <c:if test="#{pedidoBean.pagina gt 1}">
+                                <li class="page-item shadow-sm">
+                                    <h:link class="page-link" outcome="lista-de-usuarios.xhtml">
+                                        <i class="fa fa-chevron-left"></i>
+                                        <f:param name="pagina" value="#{pedidoBean.pagina - 1}" />
+                                        <c:if test="#{not empty param.maxresultados}">
+                                            <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.estado}">
+                                            <f:param name="estado" value="#{param.estado}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.correo}">
+                                            <f:param name="rol" value="#{param.correo}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.orden}">
+                                            <f:param name="orden" value="#{param.orden}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.modo}">
+                                            <f:param name="modo" value="#{param.modo}" />
+                                        </c:if>
+                                    </h:link>
+                                </li>
+                            </c:if>
+                            <c:forEach var="loop" 
+                                       begin="#{pedidoBean.pagina gt 4 ? 
+                                                    pedidoBean.totalPaginas - pedidoBean.pagina gt 3 ? 
+                                                    pedidoBean.pagina - 3 : pedidoBean.totalPaginas - 6 gt 0 ?
+                                                        pedidoBean.totalPaginas - 6
+                                                    :
+                                                        1
+                                               : 
+                                                    1}" 
+                                       end="#{pedidoBean.pagina gt 4 ? 
+                                                pedidoBean.pagina + 3 gt pedidoBean.totalPaginas ? 
+                                                    pedidoBean.totalPaginas : pedidoBean.pagina + 3 
+                                                : 
+                                                 pedidoBean.totalPaginas lt 7 ? 
+                                                    pedidoBean.totalPaginas : 7
+                                            }">
+                                <li class="page-item shadow-sm #{pedidoBean.pagina == loop ? 'active':''}">
+                                    <h:link value="#{loop}" class="page-link" outcome="lista-de-usuarios.xhtml">
+                                        <f:param name="pagina" value="#{loop}" />
+                                        <c:if test="#{not empty param.maxresultados}">
+                                            <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.estado}">
+                                            <f:param name="estado" value="#{param.estado}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.correo}">
+                                            <f:param name="rol" value="#{param.correo}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.orden}">
+                                            <f:param name="orden" value="#{param.orden}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.modo}">
+                                            <f:param name="modo" value="#{param.modo}" />
+                                        </c:if>
+                                    </h:link>
+                                </li>
+                            </c:forEach>
+                            <c:if test="#{pedidoBean.pagina lt pedidoBean.totalPaginas}">
+                                <li class="page-item shadow-sm">
+                                    <h:link class="page-link" outcome="lista-de-usuarios.xhtml">
+                                        <i class="fa fa-chevron-right"></i>
+                                        <f:param name="pagina" value="#{pedidoBean.pagina + 1}" />
+                                        <c:if test="#{not empty param.maxresultados}">
+                                            <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.estado}">
+                                            <f:param name="estado" value="#{param.estado}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.correo}">
+                                            <f:param name="rol" value="#{param.correo}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.orden}">
+                                            <f:param name="orden" value="#{param.orden}" />
+                                        </c:if>
+                                        <c:if test="#{not empty param.modo}">
+                                            <f:param name="modo" value="#{param.modo}" />
+                                        </c:if>
+                                    </h:link>
+                                </li>
+                            </c:if>
+                        </ul>
+                    </nav>
+                </c:if>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

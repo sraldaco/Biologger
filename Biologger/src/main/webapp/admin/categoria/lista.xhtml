@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de categorías"/>
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <p>
+                    Da click en la categoría para ver sus opciones. O también da 
+                    click en los íconos de la izquierda para expandir o contraer.
+                </p>
+                <p>
+                    <h:link class="btn btn-outline-success" outcome="agregar.xhtml"> 
+                        <i class="fa fa-plus"></i> Agregar nueva categoría
+                    </h:link>
+                </p>
+                <ul class="pl-0" style="list-style:none;">
+                    <c:forEach var="categoria" items="#{beanCategoria.categoriasRoot}">
+                        <li style="position:relative">
+                            <a class="arrow fa 
+                               #{not empty categoria.hijas ?'fa-angle-down' : 'fa-minus small'} 
+                               text-dark mr-1"
+                               style="text-decoration:none;"
+                               href="#collapse#{categoria.id}" 
+                               data-toggle="collapse" 
+                               aria-expanded="false" 
+                               aria-controls="collapse#{categoria.id}">
+                            </a>
+                            <a class="mr-1"
+                                href="#options#{categoria.id}" 
+                                data-toggle="collapse" 
+                                aria-expanded="false" 
+                                aria-controls="collapse#{categoria.id}">
+                                #{categoria.nombre}
+                             </a><br />
+                            <span id="options#{categoria.id}" class="collapse btn-group shadow" 
+                                  style="position:absolute;z-index:1000; ">
+                                <h:link outcome="editar.xhtml" class="btn btn-dark btn-sm">
+                                    <i class="fa fa-edit"></i> Editar
+                                    <f:param name="id" value="#{categoria.id}"/>
+                                </h:link>
+                                <h:link outcome="agregar.xhtml" class="btn btn-dark btn-sm">
+                                    <i class="fa fa-plus"></i> Subcategoría
+                                    <f:param name="padre" value="#{categoria.id}"/>
+                                </h:link>
+                                <h:link outcome="eliminar.xhtml" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-eraser"></i> Eliminar
+                                    <f:param name="id" value="#{categoria.id}"/>
+                                </h:link>
+                            </span>
+                            <c:if test="#{not empty categoria.hijas}">
+                                <ui:include src="./../../WEB-INF/plantillas/recursiva/categorias-pagina.xhtml">
+                                    <ui:param name="cat" value="#{categoria}" />
+                                </ui:include>
+                            </c:if>
+                        </li>
+                    </c:forEach>
+                </ul>
+                <script>
+                    $(function(){
+                        $('.arrow').click(function(){
+                            if ($(this).hasClass('fa-angle-down')) {
+                                $(this).removeClass('fa-angle-down')
+                                       .addClass('fa-angle-right');
+                            } else if ($(this).hasClass('fa-angle-right')) {
+                                $(this).removeClass('fa-angle-right')
+                                       .addClass('fa-angle-down');
+                            }
+                        });
+                    });
+                </script>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

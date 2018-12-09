@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/system/page-profesor-public.xhtml">
+            <ui:param name="Sidebar" value="true" />
+            <ui:param name="tituloDePagina" value="#{beanKit.kit.titulo}" />
+            <ui:define name="sidebar">
+                <h:graphicImage class="w-100 img-thumbnail mb-1 shadow-sm"
+                    value="#{beanKit.kit.profesor.foto != null ? beanKit.kit.profesor.foto : '/faces/resources/assets/images/user/icon.png' }"
+                    alt="#{beanKit.kit.profesor.nombre}"/>
+                <h4 class="mb-0 px-3">#{beanKit.kit.profesor.nombre}</h4>
+                <p class="px-3 mb-0">
+                    <a href="mailto:#{beanKit.kit.profesor.correo}">#{beanKit.kit.profesor.correo}</a>
+                </p>
+                <hr class="mt-2 mb-3" />
+                <h4 class="text-success"><i class="fa fa-share-alt small"></i> ¡Comparte!</h4>
+                <input type="text" class="form-control mb-1" id="url" onmouseover="this.select();" />
+                <a class="btn btn-outline-dark btn-sm"
+                    href="mailto:?subject=#{tituloDePagina}&amp;body=#{request.requestURL}?#{request.queryString}" >
+                    <i class="fa fa-envelope"></i> Enviar
+                </a>
+                <script>
+                    $(function() {
+                        var url = $(location).attr('href');
+                        $('#url').val(url);
+                    });
+                </script>
+            </ui:define>
+
+            <ui:define name="content">
+                <ui:fragment rendered="#{sesion.usuario.equals(beanKit.kit.profesor)}" >
+                    <ul class="nav nav-tabs mb-3">
+                        <li class="nav-item ml-3">
+                          <a class="nav-link active bg-light" href="#">Ver</a>
+                        </li>
+                        <li class="nav-item mr-3">
+                            <a class="nav-link" href="editar.xhtml?id=#{beanKit.kit.id}">Editar</a>
+                        </li>
+                    </ul>
+                </ui:fragment>
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:outputText value="#{beanKit.kit.descripcion}" escape="false" />
+                <c:if test="#{beanKit.kit.enlaces.size() gt 0}">
+                    <h4>Enlaces de ayuda</h4>
+                    <ol>
+                        <c:forEach var="enlace" items="#{beanKit.kit.enlaces}">
+                            <li>
+                                <c:choose>
+                                    <c:when test="#{enlace.url.startsWith('/faces')}">
+                                        <h:link outcome="#{enlace.url}" value="#{empty enlace.titulo ? enlace.url : enlace.titulo}" />
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="#{enlace.url}" target="blank">#{empty enlace.titulo ? enlace.url : enlace.titulo}</a>
+                                        <small>(<i class="fa fa-link small"></i> Externo)</small>
+                                    </c:otherwise>
+                                </c:choose>
+                                
+                            </li>
+                        </c:forEach>
+                    </ol>
+                </c:if>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

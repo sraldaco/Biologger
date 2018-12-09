@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/system/page-profesor.xhtml">
+            <ui:param name="tituloDePagina" value="Editar kit" />
+            <ui:define name="content">
+                <ui:fragment rendered="#{not sesion.usuario.equals(beanKit.kit.profesor)}">
+                    <ui:include src="./../WEB-INF/plantillas/permisos/permisos-kit.xhtml" />
+                </ui:fragment>
+                <ui:fragment rendered="#{sesion.usuario.equals(beanKit.kit.profesor)}">
+                    <ul class="nav nav-tabs mb-3">
+                        <li class="nav-item ml-3">
+                          <a class="nav-link" href="ver.xhtml?id=#{beanKit.kit.id}">Ver</a>
+                        </li>
+                        <li class="nav-item mr-3">
+                            <a class="nav-link active bg-light" href="#">Editar</a>
+                        </li>
+                    </ul>
+                    <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                        #{tituloDePagina}
+                    </h1>
+                    <h:form>
+                        <h:outputLabel for="titulo" value="Título" />
+                        <h:inputText id="titulo" class="form-control mb-3" value="#{beanKit.kit.titulo}" required="true" requiredMessage="El campo título es obligatorio" />
+                        <h:outputLabel for="descripcion" value="Instrucciones" />
+                        <pe:ckEditor value="#{beanKit.kit.descripcion}" id="descripcion" class="mb-3"
+                                     required="true" width="100%" requiredMessage="No has ingresado ninguna descripción"
+                                     toolbar="[
+                                        ['Format'],
+                                        ['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker'],
+                                        ['Maximize','ShowBlocks'],
+                                        ['Undo', 'Redo'],
+                                        '/',
+                                        [ 'Bold', 'Italic', 'Underline', 'RemoveFormat' ],
+                                        ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                                        ['NumberedList','BulletedList','Outdent','Indent',],
+                                        [ 'Link', 'Unlink'],
+                                     ] "/>
+                        <fieldset class="border p-0 px-4 mt-3">
+                            <legend onclick="$('.link').collapse('toggle');" class="p-0 px-3 border border-secondary w-auto bg-secondary text-light shadow-sm" style="cursor:pointer;">
+                                <i class="fa fa-link small"></i> 
+                                Enlaces 
+                                <span class="badge bg-light text-dark p-0 px-1">
+                                    <small>#{beanKit.kit.enlaces.size()}</small>
+                                </span>
+                            </legend>
+                            <div class="row collapse show link mb-3">
+                                <c:forEach items="#{beanKit.kit.enlaces}" var="enlace" varStatus="loop">
+                                    <div class="form-group col-7 pr-0 mb-1">
+                                        <h:outputLabel value="Título" class="small" />
+                                        <h:inputText value="#{enlace.titulo}" class="form-control form-control-sm rounded-not-right" />
+                                    </div>
+                                    <div class="form-group col-5 pl-0  mb-1">
+                                        <div class="row">
+                                            <div class="col pr-0">
+                                                <h:outputLabel value="Url" class="small" />
+                                                <h:inputText value="#{enlace.url}" class="form-control form-control-sm rounded-0" readonly="#{enlace.url.startsWith('/faces') ? 'true': 'false'}" />
+                                            </div>
+                                            <div style="width: 50px;padding-right: 15px">
+                                                <h:outputLabel value="x" class="text-light small" />
+                                                <h:commandLink class="w-100 btn btn-danger btn-sm rounded-not-left" action="#{beanKit.eliminarDeKit(enlace,loop.index)}" >
+                                                    <i class="fa fa-times"></i>
+                                                </h:commandLink>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                                <div class="col-12 text-right mt-2">
+                                    <h:commandLink class="btn btn-secondary btn-sm" action="#{beanKit.agregarEnlace()}" >
+                                        <i class="fa fa-plus"></i> Agregar nuevo enlace
+                                    </h:commandLink>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <h:commandLink action="#{beanKit.editar()}" class="btn btn-primary mt-3">
+                            <i class="fa fa-paper-plane"></i> Editar kit
+                        </h:commandLink>
+                        <h:link outcome="eliminar.xhtml?id=#{beanKit.kit.id}" class="btn btn-link text-danger mt-3" >
+                            <i class="fa fa-trash"></i> Eliminar
+                        </h:link>
+                    </h:form>
+                </ui:fragment>
+            </ui:define>
+            
+        </ui:composition>
+
+    </body>
+</html>

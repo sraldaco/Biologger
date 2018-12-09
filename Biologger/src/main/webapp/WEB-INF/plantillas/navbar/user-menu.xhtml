@@ -1,0 +1,55 @@
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    
+    <c:set var="usuario" value="#{sesion.usuario}" scope="request" />
+    <a class="d-flex ml-auto" href="#sesion-usuario" data-toggle="collapse">
+        <span class="text-secondary mt-1 mr-1">#{usuario.nombreUsuario}</span>
+        <h:graphicImage alt="#{usuario.nombreUsuario}" 
+                        value="#{usuario.foto}"
+                        height="29px" width="29px"  class="rounded"/>
+    </a>
+    <div id="sesion-usuario" 
+         class="collapse sesion-user-data bg-white shadow p-2 px-4">
+        <div class="user name text-primary">
+            #{usuario.nombre} <br />
+        </div>
+        <div class="small mt-0">
+            (#{usuario.correo}) <br />
+            <span class="text-muted">
+                <h:outputText value="Último acceso: "
+                              rendered="#{usuario.rol gt 0 }" />
+                <h:outputText value="#{usuario.ultimoAcceso}"
+                             rendered="#{usuario.rol gt 0 }" >
+                    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                </h:outputText>
+            </span>
+        </div>
+        <h:form>
+            <h:link value="Mi cuenta" outcome="/faces/usuario/perfil/ver.xhtml"
+                            rendered="#{usuario.rol gt 0 }"
+                            class="d-block text-success" />
+            <h:commandLink value="Cierra sesión" action="#{sesion.cerrarSesion()}" 
+                            rendered="#{usuario.rol gt 0 }" 
+                            class="d-block text-danger" />
+            <h:link value="Inicia sesión" outcome="/faces/usuario/iniciar-sesion.xhtml" 
+                            rendered="#{usuario.rol lt 1 }"
+                            class="d-block text-success" />
+            <h:link value="Regístrate" outcome="/faces/usuario/registro.xhtml"  
+                            rendered="#{usuario.rol lt 1 }"
+                            class="d-block text-success" />
+        </h:form>
+    </div>
+    
+</ui:composition>

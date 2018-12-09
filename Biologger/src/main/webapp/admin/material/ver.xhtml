@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui" >
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="#{verMaterial.material.nombre}" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                
+                <div class="bg-white p-3 border shadow-sm">
+                    <div class="row">
+                        <div class="col-sm-4 mb-3 mb-sm-0">
+                            <div class="bg-light h-100 p-3">
+                                <h:graphicImage 
+                                    value="#{verMaterial.material.foto}" 
+                                    class="w-100 img-fluid border border-white rounded shadow" />
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <p><strong>Id</strong><br />#{verMaterial.material.id}</p>
+                            <p><strong>Nombre</strong><br />#{verMaterial.material.nombre}</p>
+                            <p><strong>Descripción</strong><br />#{trimString.resumen(verMaterial.material.descripcion,95)}</p>
+                            <p><strong>Estado</strong><br />#{verMaterial.material.estado}</p>
+                            <strong>Categorías</strong>
+                                <ul class="pl-4" style="list-style:none;">
+                                    <c:forEach var="categoria" items="#{verMaterial.categorias}">
+                                        <div class="mr-1">
+                                            #{categoria.nombre}
+                                        </div>
+                                    </c:forEach>
+                                </ul>
+                        </div> 
+                    </div>
+                    <br/>                
+                    <h:link value="Editar" outcome="editar.xhtml?id=#{verMaterial.material.id}" class="btn btn-primary"/>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

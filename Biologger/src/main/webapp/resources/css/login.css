@@ -1,0 +1,23 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 30/09/2018, 02:43:57 AM
+    Author     : alex aldaco
+*/
+
+html,body {height:auto;min-height: 100%;}
+.panel-forms{
+    max-width:450px;
+}
+@media all and (min-width: 768px){
+    .panel-forms{width: 550px !important;max-width:550px;}
+}
+.biologger-title {font-family: 'Righteous', cursive;}
+.login{
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+}

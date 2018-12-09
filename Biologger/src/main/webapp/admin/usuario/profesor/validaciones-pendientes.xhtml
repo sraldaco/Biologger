@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+    
+    <body>
+        <ui:composition template="./../../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Validación de registro de profesores" />
+            <ui:define name="content">
+                <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item ml-3">
+                      <a class="nav-link active bg-light" href="#">Pendientes</a>
+                    </li>
+                    <li class="nav-item mr-3">
+                      <a class="nav-link" href="validaciones-procesadas.xhtml?listar=todas">Procesadas</a>
+                    </li>
+                </ul>
+                <h1 class="text-secondary pb-2 border-bottom">
+                    #{tituloDePagina}
+                </h1> 
+                <ui:fragment rendered="#{validacionProfesores.validacionesPendientes.size() lt 1}" >
+                    <p>No se han encontrado registros para esta consula.</p>
+                </ui:fragment>
+                <ui:fragment rendered="#{validacionProfesores.validacionesPendientes.size() gt 0}" >
+                    <div class="pt-2 mb-4">
+                        <h6>
+                            Esta es la lista de los profesores que han hecho su registro y 
+                            están a la espera de validación para recibir sus permisos pertinentes.
+                        </h6>
+                        <p>
+                            Para aceptar la solicitud de permisos del profesor, de clic en el botón
+                            validar. De lo contrario de clic en el botón rechazar petición.
+                        </p>
+                    </div>
+
+                    <div class="card-columns">
+                        <c:forEach var="validacion" items="#{validacionProfesores.validacionesPendientes}" >
+                            <div class="card shadow-sm">
+                                <h:graphicImage 
+                                    value="#{validacion.usuario.foto != null ? validacion.usuario.foto : '/resources/assets/images/user/icon.png' }" 
+                                    class="card-img-top w-100" />
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        #{validacion.usuario.nombre}
+                                    </h5>
+                                    <p class="card-text">
+                                        <i class="fa fa-user"></i>
+                                        <strong>Nombre de usuario:</strong><br />
+                                        #{validacion.usuario.nombreUsuario}<br />
+                                        <i class="fa fa-envelope"></i>
+                                        <strong>Correo:</strong><br />
+                                        <span class="d-block text-truncate">
+                                            #{validacion.usuario.correo}
+                                        </span>   
+                                        <i class="fa fa-hashtag"></i>
+                                        <strong>Número de trabajador:</strong><br />
+                                        #{validacion.numero}<br />
+                                        <i class="fa fa-calendar-alt"></i>
+                                        <strong>Fecha de registro:</strong><br />
+                                        <h:outputText value="#{validacion.usuario.fechaRegistro}">
+                                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm" type="date" />
+                                        </h:outputText>
+                                    </p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <h:form id="profesor#{validacion.id}">
+                                        <li class="list-group-item">
+                                            <div class="#{validacion.usuario.ultimoAcceso != null ? 'text-success' : 'text-danger'}" >
+                                                <h4>
+                                                    <i class="fa fa-shield-alt"></i> Cuenta 
+                                                    #{validacion.usuario.ultimoAcceso != null ? 'verificada' : 'no verificada'}
+                                                </h4>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h:commandLink class="text-primary"
+                                                           action="#{validacionProfesores.aceptar(validacion)}" >
+                                                <i class="fa fa-check-square"></i>
+                                                Validar solicitud
+                                            </h:commandLink>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h:commandLink class="text-danger"
+                                                           action="#{validacionProfesores.rechazar(validacion)}" >
+                                                <i class="fa fa-times"></i>
+                                                Rechazar solicitud
+                                            </h:commandLink>
+                                        </li>
+                                    </h:form>
+                                </ul>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </ui:fragment>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

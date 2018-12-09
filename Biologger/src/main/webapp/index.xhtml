@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <h:body>
+        <ui:composition template="/WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="tituloDePagina" value="Bienvenido a Biologger" />
+            <ui:define name="content" >
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <p>
+                    Aquí podrás encontrar todos los materiales necesarios para tus prácticas de campo
+                    y laboratorio, los cuales podrás solicitar para préstamo.  
+                </p>
+                <p>
+                    Podrás buscar en un amplio catálogo de materiales. Los materiales tienen un estado
+                    de 'disponible' o 'no disponible', esto debido a la alta demanda de ciertos materiales,
+                    por lo que te ofrecemos una disculpa si en algún momentos solicitas un material que no
+                    se encuentre disponible. 
+                </p>
+                <p>
+                    En todo momento podrás revisar el estado de tus pedidos.No olvides
+                    devolverlos a tiempo y en buen estado, de lo contrario se te bloqueará del 
+                    sistema y no podrás solicitar más material hasta devolver el material 
+                    préstado. :(
+                </p>
+                <p>
+                    Esperamos que tu experiencia en Biologger sea lo más agradable posible :) 
+                </p>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

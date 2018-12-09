@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/PantallaInicial.xhtml">
+            <ui:param name="tituloDePagina" value="Registro de usuarios" />
+            <ui:param name="backgroundUrl" value="resources/register.jpg" />
+
+            <ui:define name="contenido">
+                <h:panelGroup rendered="#{registro.usuario.foto != null}" class="d-block mb-3" >
+                    <h:graphicImage class="rounded float-left mr-3" height="70px" url="#{registro.usuario.foto}" />
+                    <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{registro.usuario.foto != null}">
+                        <h:outputLabel value="Fotografía" for="foto" />
+                        <div class="d-flex">
+                            <h:commandLink action="#{registro.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-backspace"></i> Eliminar
+                            </h:commandLink>
+                        </div>
+                    </h:form>
+                </h:panelGroup>
+                <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{registro.usuario.foto == null}">
+                    <h:outputLabel value="Fotografía" for="foto" />
+                    <div class="d-flex">
+                        <div class="custom-file">
+                            <h:inputFile value="#{registro.file}" class="custom-file-input" id="foto"
+                                         validator="UploadImageValidator" required="true"
+                                         requiredMessage="No has seleccionado ninguna fotografía" > 
+                                <f:passThroughAttribute name="accept" value="image/*" />
+                            </h:inputFile>
+                            <label class="custom-file-label rounded-not-right" for="foto">Seleccionar</label>
+                        </div>
+                        <h:commandLink action="#{registro.subirImagen()}" class="btn btn-primary disabled rounded-not-left"
+                                        title="¡Sube la imagen!" >
+                            <i class="fa fa-upload"></i> Subir
+                        </h:commandLink>
+                    </div>
+                </h:form>
+                <h:form id="registerForm">
+                    <h:outputLabel value="Nombre" for="nombre" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-address-card"></i></span>
+                        </div>
+                        <h:inputText id="nombre" value="#{registro.usuario.nombre}" required="true" 
+                                     requiredMessage="¡Dinos como te llamas, ingresa tu nombre!" class="form-control" />
+                    </div>
+                    <h:outputLabel value="Usuario" for="usuario" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-user"></i></span>
+                        </div>
+                        <h:inputText id="usuario" value="#{registro.usuario.nombreUsuario}" required="true" 
+                                     requiredMessage="Ingresa el nombre de usuario con el que vas a iniciar sesión" class="form-control" />
+                    </div>
+                    <h:outputLabel value="Contraseña" for="contraseña" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
+                        </div>
+                        <h:inputSecret id="contraseña" value="#{registro.usuario.contrasena}" required="true" 
+                                       requiredMessage="Se requiere una contraseña" class="form-control" />
+                    </div> 
+                    <h:outputLabel value="Confirma tu contraseña" for="confirmaContraseña" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-asterisk"></i></span>
+                        </div>
+                        <h:inputSecret id="confirmaContraseña" value="#{registro.confirmacionContrasena}" required="true" 
+                                       requiredMessage="Confirma tu contraseña" class="form-control" />
+                    </div> 
+                    <h:outputLabel value="Correo electrónico" for="correo" />
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <h:inputText id="correo" value="#{registro.usuario.correo}" required="true" 
+                                     onblur="$(function() { var correo = $('.correo').val(); $('.correo').val(correo.toLowerCase().trim()); } );"
+                                     requiredMessage="El campo correo es obligatorio y tiene que ser de @ciencias.unam.mx" 
+                                     validatorMessage="#{registro.usuario.correo} no es válido, tiene que ser de @ciencias.unam.mx" 
+                                     class="form-control correo" >
+                            <f:passThroughAttribute name="type" value="email"/>
+                            <f:passThroughAttribute name="placeholder" value="@ciencias.unam.mx"/>
+                            <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@ciencias.unam.mx" />
+                        </h:inputText>
+                    </div> 
+                    <div class="ntrabajador-wrapper d-none">
+                        <h:outputLabel value="Número de trabajador" for="ntrabajador" />
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupPrepend"><i class="fa fa-hashtag"></i></span>
+                            </div>
+                            <h:inputText id="ntrabajador" value="#{registro.numeroTrabajador}" 
+                                         class="form-control"  />
+                        </div>
+                    </div>
+                    <div class="form-check mb-4">
+                        <h:selectBooleanCheckbox value="#{registro.chkProfesor}" class="form-check-input" id="profesor" />
+                        <label class="form-check-label" for="profesor">
+                            Checa la casilla si eres profesor
+                            <small class="form-text alert alert-danger mb-0">(Requiere validación adicional)</small>
+                        </label>
+                    </div> 
+                    <h:commandLink action="#{registro.registrarUsuario()}" class="btn btn-success" >
+                        <i class="fa fa-edit"></i> Registrar
+                    </h:commandLink>
+                    <h:link outcome="iniciar-sesion?faces-redirect=true" class="btn btn-light" >
+                        <i class="fa fa-sign-in-alt"></i> Inicia sesión
+                    </h:link>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

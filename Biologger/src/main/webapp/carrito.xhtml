@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <!-- 
+    *******************************************************************
+    *********                                                **********
+    *********             Autor Alex Aldaco                  **********
+    *********                                                **********
+    *******************************************************************
+    -->
+    <body>
+
+        <ui:composition template="./WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="tituloDePagina" value="Carrito" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <ui:fragment rendered="#{carrito.materiales.size() lt 1}" >
+                    <p>
+                        No tienes ningún material en el carrito. Navega en el catálogo para 
+                        agregar materiales al carrito y generar un pedido.
+                    </p>
+                </ui:fragment>
+                <ui:fragment rendered="#{carrito.materiales.size() gt 0}" >
+                    <p class="lead">
+                        Actualmente tienes #{carrito.materiales.size()} #{carrito.materiales.size() gt 1 ? "materiales" : "material"} en el carrito.
+                        Da click en el botón <strong>"Generar pedido"</strong> para hacer la reservación.
+                    </p>
+                    <p>
+                        El pedido se generará con los materiales disponibles al momento de dar
+                        click en el botón. Si hay algún material que al momento de generar el 
+                        pedido ya no esta disponible porque algún otro usuario lo pidió primero, 
+                        o se encuentra fuera de servicio; no se agregará al pedido. En éste caso
+                        puedes generar un nuevo pedido con algún otro material que hayas seleccionado.
+                    </p>
+                    <c:forEach varStatus="loop" var="material" items="#{carrito.materiales}" >
+                        <div class="media bg-white p-3 mb-3 border shadow-sm">
+                            <h:graphicImage alt="#{material.nombre}" class="mr-3" width="64px"
+                                            url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
+                            <div class="media-body">
+                                <h5 class="mt-0">#{loop.index + 1} - #{material.nombre}</h5>
+                                <p>
+                                    #{trimString.resumen(material.descripcion, 140)} <br />
+                                    <strong class="#{material.estado eq 'Disponible' ? 'text-success' : 'text-danger'}">
+                                        #{material.estado}
+                                    </strong>
+                                </p>
+                                <h:form id="carrito">
+                                    <h:commandLink action="#{carrito.eliminarDelCarrito(material)}" class="btn btn-danger btn-sm" >
+                                        <i class="fa fa-trash small"></i> Quitar
+                                    </h:commandLink>
+                                </h:form>
+                                
+                            </div>
+                           
+                        </div>
+                    </c:forEach>
+                    <h:form id="pedido">
+                        <h:commandLink class="btn btn-primary" action="#{carrito.crearPedido(sesion.usuario)}" >
+                            <i class="fa fa-paper-plane"></i> Generar pedido
+                        </h:commandLink>
+                    </h:form>
+                </ui:fragment>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

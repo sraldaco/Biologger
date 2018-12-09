@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+    
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="html.xhtml">
+            <ui:define name="page" >
+                <ui:fragment rendered="#{sesion.usuario.rol == 1 }">
+                    <ui:include src="../navbar/admin-nav.xhtml" />
+                </ui:fragment>
+                <ui:include src="../navbar/nav.xhtml" />
+                <div class="bg-light">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <p:messages id="panelFM" autoUpdate="true" showDetail="true" closable="true" showIcon="false" style="overflow-wrap: break-word;" escape="false" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mt-4 mb-4">
+                                    <ui:fragment rendered="#{sesion.usuario.rol != 2}">
+                                        <ui:include src="./../../../WEB-INF/plantillas/permisos/permisos-profesor.xhtml" />   
+                                    </ui:fragment>
+                                    <ui:fragment rendered="#{sesion.usuario.rol eq 2}">
+                                        <div class="row">
+                                            <div class="#{ Sidebar ? 'col-md-8 col-lg-9' : 'col-md-12' }">
+                                                <ui:insert name="content" />
+                                            </div>
+                                            <ui:fragment rendered="#{Sidebar}" >
+                                                <div class="col-md-4 col-lg-3">
+                                                    <ui:insert name="sidebar" />
+                                                </div>
+                                            </ui:fragment>
+                                        </div>
+                                    </ui:fragment>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer bg-white border-top pt-3 pb-3">
+                    <div class="container">
+                        <p class="mb-0">
+                            &copy; Bakliz, Ingeniería de Software 2019-1. Todos los derechos reservados.
+                        </p>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

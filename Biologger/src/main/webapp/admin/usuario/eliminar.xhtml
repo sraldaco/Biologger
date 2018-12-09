@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="#{beanUsuarios.usuario.nombre}" />
+            <ui:define name="content">
+                <h1><em>Eliminar usuario</em>: #{tituloDePagina}</h1>
+                <p>Esta acción no se puede deshacer. ¿Estás seguro de querer eliminar al usuario: #{tituloDePagina}?</p>
+                <h:form>
+                    <h:commandLink class="btn btn-danger mr-1" action="#{beanUsuarios.eliminarUsuario()}" >
+                        <i class="fa fa-trash"></i> Eliminar
+                    </h:commandLink>
+                    <h:link class="btn btn-light" outcome="lista-de-usuarios.xhtml" >
+                        <i class="fa fa-ban"></i> Cancelar
+                    </h:link>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

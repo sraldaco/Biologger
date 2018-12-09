@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <!--<h:head>
+        <title>Agregar Material</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>-->
+    <h:body>
+        <link rel="stylesheet" href="#{request.contextPath}/faces/resources/css/material.css" />
+        <link href="https://raw.githubusercontent.com/silviomoreto/bootstrap-select/master/dist/css/bootstrap-select.min.css" rel="stylesheet"/>
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Agregar material"/>
+            <ui:define name="content">
+                <link rel="stylesheet" type="text/css" href="#{request.contextPath}/faces/resources/css/material.css" />
+                <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:panelGroup id="elimina" rendered="#{agregaMat.foto != null}" class="d-block mb-3" >
+                    <h:graphicImage class="rounded float-left mr-3" height="70px" url="#{agregaMat.foto}" />
+                    <h:form id="eliminarFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{agregaMat.foto != null}">
+                        <h:outputLabel value="Fotografía" for="foto" />
+                        <div class="d-flex">
+                            <h:commandLink action="#{agregaMat.eliminarImagen()}" class="btn btn-outline-danger btn-sm">
+                                <i class="fa fa-backspace"></i> Eliminar
+                            </h:commandLink>
+                        </div>
+                    </h:form>
+                </h:panelGroup>
+                
+                <h:form id="subirFoto" class="mb-3" enctype="multipart/form-data" 
+                        rendered="#{agregaMat.file == null}">
+                                        <h:outputLabel value="Fotografía" for="foto" />
+                    <div class="d-flex">
+                        <div class="custom-file">
+                            <h:inputFile value="#{agregaMat.file}" class="custom-file-input" id="foto"
+                                         validator="UploadImageValidator" required="true"
+                                         requiredMessage="No has seleccionado ninguna fotografía" > 
+                                <f:passThroughAttribute name="accept" value="image/*" />
+                            </h:inputFile>
+                            <label class="custom-file-label rounded-not-right" for="foto">Seleccionar</label>
+                        </div>
+                        <h:commandLink action="#{agregaMat.handleUpload()}" class="btn btn-primary disabled rounded-not-left"
+                                        title="¡Sube la imagen!">
+                            <i class="fa fa-upload"></i> Subir
+                        </h:commandLink>
+                    </div>
+                </h:form>
+                <h:form id="form2" enctype="multipart/form-data">
+                    <div>
+                        <h:outputLabel for="nombre" value="Nombre:" />
+                        <p:inputText value="#{agregaMat.material.nombre}" id="nombre"
+                                required="true" class="form-control mb-3" requiredMessage="No has ingresado un nombre de material"/>
+                    </div>
+                    <div>
+                        <h:outputLabel for="descripcion" value="Descripcion:" />
+                        <pe:ckEditor value="#{agregaMat.material.descripcion}" id="descripcion" required="true" width="100%" requiredMessage="No has ingresado ninguna descripción"/>
+                    </div>
+                    <br/>
+                    <div>
+                        <h:outputLabel for="estado" value="Estado"/>
+                        <h:selectOneMenu value="#{agregaMat.material.estado}" class="custom-select custom-select-sm" required="true" requiredMessage="No has ingresado ningun estado">
+                                <f:selectItem itemValue="Disponible" itemLabel="Disponible" />
+                                <f:selectItem itemValue="No Disponible" itemLabel="No Disponible" />
+                        </h:selectOneMenu>
+                    </div>
+                    <br/>
+                    <div>
+                        <h:outputLabel for="categorias" value="Categorias:" />
+                        <p:selectCheckboxMenu id="multiple" value="#{agregaMat.categoriasSeleccionadas}" converter="catConverter" label="Categorias" multiple="true"
+                                            appendTo="@this" class="form-control" style="height: auto" panelStyleClass="bg-light" filter="false" required="true" requiredMessage="No has seleccionado ninguna categoria">
+                            <f:selectItems value="#{agregaMat.categorias}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" class="categorias-item"/>
+                        </p:selectCheckboxMenu>
+                    </div>
+
+                    <br></br>
+                    
+                    <p:commandLink action="#{agregaMat.crearMateriales()}" styleClass="btn btn-primary" update="@this form2" disabled="#{agregaMat.foto==null}">     
+                        <i class="fa fa-save"></i> Guardar Material
+                    </p:commandLink>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

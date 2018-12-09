@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/system/page-profesor.xhtml">
+
+            <ui:define name="content">
+                <ui:param name="tituloDePagina" value="#{beanKit.kit.titulo}" />
+                <ui:fragment rendered="#{not sesion.usuario.equals(beanKit.kit.profesor)}">
+                    <ui:include src="./../WEB-INF/plantillas/permisos/permisos-kit.xhtml" />
+                </ui:fragment>
+                <ui:fragment rendered="#{sesion.usuario.equals(beanKit.kit.profesor)}">
+                    <h1><em>Eliminar kit</em>: #{tituloDePagina}</h1>
+                    <p>Esta acción no se puede deshacer. ¿Estás seguro de querer eliminar el kit: #{tituloDePagina}?</p>
+                    <h:form>
+                        <h:commandLink class="btn btn-danger mr-1" action="#{beanKit.eliminar()}" >
+                            <i class="fa fa-trash"></i> Eliminar
+                        </h:commandLink>
+                        <h:link class="btn btn-light" outcome="mis-kits.xhtml" >
+                            <i class="fa fa-ban"></i> Cancelar
+                        </h:link>
+                    </h:form>
+                </ui:fragment>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

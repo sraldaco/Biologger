@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+<!-- 
+*******************************************************************
+*********                                                **********
+*********             Autor Alex Aldaco                  **********
+*********                                                **********
+*******************************************************************
+-->
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Lista de usuarios" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:form class="mb-3">
+                    <div  class="form-row">
+                        <div class="form-group col-6">
+                            <h:outputLabel for="nombre"  value="Nombre" />
+                            <h:inputText value="#{beanUsuarios.nombre}" class="form-control" id="nombre" />
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="rol" value="Rol"/>
+                            <h:selectOneMenu value="#{beanUsuarios.rol}" id="rol" class="custom-select" >
+                                <f:selectItem itemValue="-1" itemLabel="— Seleccionar —" />
+                                <f:selectItem itemValue="1" itemLabel="Administrador" />
+                                <f:selectItem itemValue="2" itemLabel="Profesor" />
+                                <f:selectItem itemValue="3" itemLabel="Usuario normal" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="estado" value="Estado"/>
+                            <h:selectOneMenu value="#{beanUsuarios.estado}" id="estado" class="custom-select" >
+                                <f:selectItem itemValue="" itemLabel="— Seleccionar —" />
+                                <f:selectItem itemValue="true" itemLabel="Activo" />
+                                <f:selectItem itemValue="false" itemLabel="Bloqueado" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <h:outputLabel for="orden"  value="Orden" />
+                            <h:selectOneMenu value="#{beanUsuarios.orden}" id="orden" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="id" itemLabel="ID de usuario" />
+                                <f:selectItem itemValue="nombreUsuario" itemLabel="Nombre de usuario" />
+                                <f:selectItem itemValue="nombre" itemLabel="Nombre" />
+                                <f:selectItem itemValue="correo" itemLabel="Correo" />
+                                <f:selectItem itemValue="rol" itemLabel="Rol" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col">
+                            <h:outputLabel for="modo"  value="Modo" />
+                            <h:selectOneMenu value="#{beanUsuarios.modo}" id="modo" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="ASC" itemLabel="Ascendente" />
+                                <f:selectItem itemValue="DESC" itemLabel="Descendente" />
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group col">
+                            <h:outputLabel for="maxresultados" value="Resultados"/>
+                            <h:selectOneMenu value="#{beanUsuarios.maxResultados}" id="maxresultados" class="custom-select custom-select-sm" >
+                                <f:selectItem itemValue="25" itemLabel="25 resultados" />
+                                <f:selectItem itemValue="50" itemLabel="50 resultados" />
+                                <f:selectItem itemValue="75" itemLabel="75 resultados" />
+                                <f:selectItem itemValue="100" itemLabel="100 resultados" />
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                    <h:commandLink action="#{beanUsuarios.filtrar()}" class="btn btn-primary" >
+                        <i class="fa fa-filter"></i> Filtrar
+                    </h:commandLink>
+                </h:form>
+                <ui:fragment rendered="#{beanUsuarios.totalResultados eq 0}">
+                    <h2 class="display-3 text-danger text-center">OoopSss!</h2>
+                    <h3 class="text-center">Lo sentimos, no hay resultados para esta consulta.</h3>
+                </ui:fragment>
+                <ui:fragment rendered="#{beanUsuarios.totalResultados gt 0}">
+                    <hr />
+                    <h6>
+                        Hay #{beanUsuarios.totalResultados} resultados en esta lista de usuarios. 
+                        Estás viendo la página #{beanUsuarios.pagina} de #{beanUsuarios.totalPaginas} 
+                        (#{beanUsuarios.maxResultados} resultados por página).
+                    </h6>
+                    <hr />
+                    <div class="d-none d-lg-flex flex-row align-items-center pb-3 pt-3 mt-3 mb-3 bg-info text-white border shadow-sm sticky-top">
+                        <div class="col-lg-1">
+                            <strong>Foto</strong>
+                        </div>
+                        <div class="col-sm-6 col-lg-11">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <strong>Usuario</strong>
+                                </div>
+                                <div class="col-lg-3">
+                                    <strong>Nombre</strong>
+                                </div>
+                                <div class="col-lg-3 text-truncate">
+                                    <strong>Correo</strong>
+                                </div>
+                                <div class="col-lg-1">
+                                    <strong>Rol</strong>
+                                </div>
+                                <div class="col-lg-1">
+                                    <strong>Estado</strong>
+                                </div>
+                                <div class="col-lg-2">
+                                    <strong>Acciones</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <c:forEach var="usuario" items="#{beanUsuarios.usuarios}" varStatus="loop" >
+                        <div class="col-md-12">
+                            <div class="row align-items-center mb-3 pt-3 pb-3 bg-white border shadow-sm">
+                                <div class="col-sm-6 col-lg-1">
+                                    <h:graphicImage 
+                                        value="#{usuario.foto != null ? usuario.foto : '/resources/assets/images/user/icon.png' }" 
+                                        class="img-fluid" />
+                                </div>
+                                <div class="col-sm-6 col-lg-11">
+                                    <div class="row">
+                                        <div class="col-lg-2">
+                                            <div class="d-lg-none">
+                                                <strong>Usuario:</strong>
+                                            </div>
+                                            #{usuario.nombreUsuario}
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="d-lg-none">
+                                                <strong>Nombre:</strong>
+                                            </div>
+                                            #{usuario.nombre}
+                                        </div>
+                                        <div class="col-lg-3 text-truncate">
+                                            <div class="d-lg-none">
+                                                <strong>Correo:</strong>
+                                            </div>
+                                            #{usuario.correo}
+                                        </div>
+                                        <div class="col-lg-1 text-truncate">
+                                            <div class="d-lg-none">
+                                                <strong>Rol:</strong>
+                                            </div>
+                                            #{usuario.rol == 1 ? "Administrador" : usuario.rol == 2 ? "Profesor" : "Usuario" }
+                                        </div>
+                                        <div class="col-lg-1">
+                                            <div class="d-lg-none">
+                                                <strong>Estado:</strong>
+                                            </div>
+                                            #{usuario.activo ? "Activo" : "Bloqueado"}
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <div class="d-lg-none">
+                                                <strong>Acciones:</strong>
+                                            </div>
+                                            <h:link value="Ver" outcome="ver.xhtml?id=#{usuario.id}" class="pr-1"/>
+                                            <h:link value="Editar" outcome="editar.xhtml?id=#{usuario.id}" class="pr-1"/>
+                                            <h:link value="Eliminar" outcome="eliminar.xhtml?id=#{usuario.id}" class="pr-1"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </c:forEach>
+                    <c:if test="#{beanUsuarios.totalPaginas gt 1}">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <c:if test="#{beanUsuarios.pagina gt 1}">
+                                    <li class="page-item shadow-sm">
+                                        <h:link class="page-link" outcome="lista-de-usuarios.xhtml">
+                                            <i class="fa fa-chevron-left"></i>
+                                            <f:param name="pagina" value="#{beanUsuarios.pagina - 1}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.nombre}">
+                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.rol}">
+                                                <f:param name="rol" value="#{param.rol}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.estado}">
+                                                <f:param name="estado" value="#{param.estado}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:if>
+                                <c:forEach var="loop" 
+                                           begin="#{beanUsuarios.pagina gt 4 ? 
+                                                        beanUsuarios.totalPaginas - beanUsuarios.pagina gt 3 ? 
+                                                        beanUsuarios.pagina - 3 : beanUsuarios.totalPaginas - 6 gt 0 ?
+                                                            beanUsuarios.totalPaginas - 6
+                                                        :
+                                                            1
+                                                   : 
+                                                        1}" 
+                                           end="#{beanUsuarios.pagina gt 4 ? 
+                                                    beanUsuarios.pagina + 3 gt beanUsuarios.totalPaginas ? 
+                                                        beanUsuarios.totalPaginas : beanUsuarios.pagina + 3 
+                                                    : 
+                                                     beanUsuarios.totalPaginas lt 7 ? 
+                                                        beanUsuarios.totalPaginas : 7
+                                                }">
+                                    <li class="page-item shadow-sm #{beanUsuarios.pagina == loop ? 'active':''}">
+                                        <h:link value="#{loop}" class="page-link" outcome="lista-de-usuarios.xhtml">
+                                            <f:param name="pagina" value="#{loop}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.nombre}">
+                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.rol}">
+                                                <f:param name="rol" value="#{param.rol}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.estado}">
+                                                <f:param name="estado" value="#{param.estado}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:forEach>
+                                <c:if test="#{beanUsuarios.pagina lt beanUsuarios.totalPaginas}">
+                                    <li class="page-item shadow-sm">
+                                        <h:link class="page-link" outcome="lista-de-usuarios.xhtml">
+                                            <i class="fa fa-chevron-right"></i>
+                                            <f:param name="pagina" value="#{beanUsuarios.pagina + 1}" />
+                                            <c:if test="#{not empty param.maxresultados}">
+                                                <f:param name="maxresultados" value="#{param.maxresultados}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.nombre}">
+                                                <f:param name="nombre" value="#{param.nombre}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.rol}">
+                                                <f:param name="rol" value="#{param.rol}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.estado}">
+                                                <f:param name="estado" value="#{param.estado}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.orden}">
+                                                <f:param name="orden" value="#{param.orden}" />
+                                            </c:if>
+                                            <c:if test="#{not empty param.modo}">
+                                                <f:param name="modo" value="#{param.modo}" />
+                                            </c:if>
+                                        </h:link>
+                                    </li>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </c:if>
+                </ui:fragment>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

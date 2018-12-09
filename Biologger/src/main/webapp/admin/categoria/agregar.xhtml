@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/plantillas/system/page-admin.xhtml">
+            <ui:param name="tituloDePagina" value="Agregar categoría"/>
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <p>
+                    Selecciona de qué categría va a ser subcategoría. Para dejar esta 
+                    categoría en la raíz no selecciones ningún padre.
+                </p>
+                <h:form>
+                    <h:outputLabel for="padre" value="Padre:" />
+                    <h:selectOneMenu value = "#{beanCategoria.padreId}" id="padre" class="custom-select mb-3"> 
+                        <f:selectItem itemValue = "0" itemLabel = "— Seleccionar —" /> 
+                        <f:selectItems value="#{beanCategoria.categorias}" 
+                                       var="categoria" itemValue="#{categoria.id}" itemLabel="#{categoria.nombre}"/> 
+                    </h:selectOneMenu> 
+                    <h:outputLabel for="categoria" value="Nombre:" />
+                    <h:inputText value="#{beanCategoria.categoria.nombre}" class="form-control mb-3" 
+                                 required="true" requiredMessage="El nombre de la categoría no se puede quedar vacío" />
+                    <h:commandLink action="#{beanCategoria.crearCategoria()}" class="btn btn-primary" >
+                        <i class="fa fa-save"></i> Guardar
+                    </h:commandLink>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

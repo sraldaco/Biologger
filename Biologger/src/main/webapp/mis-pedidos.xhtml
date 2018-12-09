@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./WEB-INF/plantillas/system/page.xhtml">
+            <ui:param name="tituloDePagina" value="Mis pedidos" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <ui:fragment rendered="#{sesion.usuario.pedidos.size() lt 1}" >
+                    <h4>#{sesion.usuario.nombre.trim()}, no tienes pedidos vigentes.</h4>
+                    <p>Puedes ir al catálogo y reservar algunos materiales.</p>
+                </ui:fragment>
+                <ui:fragment rendered="#{sesion.usuario.pedidos.size() gt 0}">
+                    <c:set var="pedidos" value="#{sesion.usuario.pedidos}" />
+                    <p class="lead">
+                        Tienes #{pedidos.size()} 
+                        #{pedidos.size() gt 1 ? 'pedidos vigentes' : 'pedido vigente' }.
+                    </p>
+                    <c:forEach varStatus="plop" var="pedido" items="#{pedidos}">
+                        <div class="pedido #{not plop.last ? 'mb-4' : ''}">
+                            <h5>
+                                Pedido id ##{pedido.id} - 
+                                <h:outputText value="#{pedido.fechaPedido}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                </h:outputText>, 
+                                #{sesion.usuario.correo.trim()} 
+                                <span class="badge #{pedido.estado eq 'Vencido' ? 'badge-danger' : pedido.estado eq 'Pendiente' ? 'badge-success' : 'badge-primary'}">
+                                    #{pedido.estado}
+                                </span>
+                            </h5>
+                            <div class="bg-white p-2 px-3 border shadow-sm">
+                                <div  class="border-bottom pb-2">
+                                    Detalle del pedido: #{pedido.materiales.size()} #{pedido.materiales.size() eq 1 ? 'material' : 'materiales'}.
+                                    <ui:fragment  rendered="#{pedido.estado eq 'Pendiente'}">
+                                        Expira  
+                                        <h:outputText value="#{pedidoBean.expiraInfo(pedido.fechaPedido)}" class="badge badge-warning">
+                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                        </h:outputText>
+                                    </ui:fragment>
+                                </div>
+                                <c:forEach varStatus="loop" var="material" items="#{pedido.materiales}" >
+                                    <div class="media pt-2 pb-2 border-bottom">
+                                        <h:graphicImage alt="#{material.nombre}" class="mr-3 rounded" width="34px"
+                                                    url="#{material.foto != null ? material.foto : '/faces/resources/assets/images/material.png'}" />
+                                        <div class="media-body">
+                                            <h6 class="mt-0 mb-0">
+                                                <a href="#{request.contextPath}/faces/catalogo/material.xhtml?id=#{material.id}">#{loop.index + 1} - #{material.nombre}</a>
+                                            </h6>
+                                            <p class="mb-0 text-muted small">
+                                                #{trimString.resumen(material.descripcion, 175)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                                <h:form id="pedido#{pedido.id}" class="pt-3 pb-2">
+                                    <h:commandLink class="btn btn-danger btn-sm mr-1" action="#{pedidoBean.cancelar(pedido)}" 
+                                                   rendered="#{pedido.estado eq 'Pendiente'}" >
+                                        <i class="fa fa-trash"></i> Cancelar pedido
+                                    </h:commandLink>
+                                </h:form>
+                                <ui:fragment rendered="#{pedido.estado eq 'Activo'}">
+                                    <p class="alert alert-info">
+                                        Este pedido se encuentra en progreso. Deberás <strong>regresar los materiales</strong> antes de la fecha <strong> 
+                                        <h:outputText value="#{pedido.fechaEntrega}" >
+                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                        </h:outputText></strong>,
+                                        de lo contrario no podrás solicitar más préstamos.
+                                    </p>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{pedido.estado eq 'Vencido'}">
+                                    <p class="alert alert-danger">
+                                        Debes <strong>regresar los materiales</strong> de inmediato,<strong>  la fecha límite de entrega era el
+                                        <h:outputText value="#{pedido.fechaEntrega}" >
+                                            <f:convertDateTime pattern="MM/dd/yyyy" type="date" />
+                                        </h:outputText></strong>.
+                                        No puedes solicitar más préstamos, hasta que regreses todos lo materiales en buen estado.
+                                    </p>
+                                </ui:fragment>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </ui:fragment>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

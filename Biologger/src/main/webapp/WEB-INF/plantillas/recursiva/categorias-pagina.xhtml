@@ -1,0 +1,46 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" >
+    <ul class="collapse show pl-4" id="collapse#{cat.id}" style="list-style:none;">
+        <c:forEach items="#{cat.hijas}" var="sub">
+            <li style="position:relative">
+                <a class="arrow fa  
+                    #{not empty sub.hijas ?'fa-angle-down' : 'fa-minus small'} 
+                    text-dark mr-1"
+                    style="text-decoration:none;"
+                    href="#collapse#{sub.id}" 
+                    data-toggle="collapse" 
+                    aria-expanded="false" 
+                    aria-controls="collapse#{sub.id}">
+                 </a>
+                <a class="mr-1"
+                    href="#options#{sub.id}" 
+                    data-toggle="collapse" 
+                    aria-expanded="false" 
+                    aria-controls="collapse#{sub.id}">
+                    #{sub.nombre}
+                 </a><br />
+                <span id="options#{sub.id}" class="collapse btn-group shadow" 
+                      style="position:absolute;z-index:1000; ">
+                    <h:link outcome="editar.xhtml" class="btn btn-dark btn-sm">
+                        <i class="fa fa-edit"></i> Editar
+                        <f:param name="id" value="#{sub.id}"/>
+                    </h:link>
+                    <h:link outcome="agregar.xhtml" class="btn btn-dark btn-sm">
+                        <i class="fa fa-plus"></i> Subcategoría
+                        <f:param name="padre" value="#{sub.id}"/>
+                    </h:link>
+                    <h:link outcome="eliminar.xhtml" class="btn btn-danger btn-sm">
+                        <i class="fa fa-eraser"></i> Eliminar
+                        <f:param name="id" value="#{sub.id}"/>
+                    </h:link>
+                </span>
+                <ui:include src="categorias-pagina.xhtml">
+                    <ui:param name="cat" value="#{sub}" />
+                </ui:include>
+            </li>
+        </c:forEach>
+    </ul>   
+</ui:composition>

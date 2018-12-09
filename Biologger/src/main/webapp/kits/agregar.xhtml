@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/plantillas/system/page-profesor.xhtml">
+            <ui:param name="tituloDePagina" value="Agregar kit" />
+            <ui:define name="content">
+                <h1 class="text-secondary pb-2 mb-3 border-bottom">
+                    #{tituloDePagina}
+                </h1>
+                <h:form>
+                    <h:outputLabel for="titulo" value="Título" />
+                    <h:inputText id="titulo" class="form-control mb-3" value="#{beanKit.kit.titulo}" required="true" requiredMessage="El campo título es obligatorio" />
+                    <h:outputLabel for="descripcion" value="Instrucciones" />
+                    <pe:ckEditor value="#{beanKit.kit.descripcion}" id="descripcion" class="mb-3"
+                                 required="true" width="100%" requiredMessage="No has ingresado ninguna descripción"
+                                 toolbar="[
+                                    ['Format'],
+                                    ['Cut','Copy','Paste','PasteText','PasteFromWord','-', 'SpellChecker'],
+                                    ['Maximize','ShowBlocks'],
+                                    ['Undo', 'Redo'],
+                                    '/',
+                                    [ 'Bold', 'Italic', 'Underline', 'RemoveFormat' ],
+                                    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+                                    ['NumberedList','BulletedList','Outdent','Indent',],
+                                    [ 'Link', 'Unlink'],
+                                 ] "/>
+                    <h:commandLink action="#{beanKit.crear(sesion.usuario)}" class="btn btn-primary mt-3">
+                        <i class="fa fa-paper-plane"></i> Crear kit
+                    </h:commandLink>
+                </h:form>
+                
+            </ui:define>
+            
+        </ui:composition>
+
+    </body>
+</html>
