@@ -15,7 +15,9 @@
 
 #### Demo
 
-[![Watch the video](screen.png)](https://youtu.be/RDcqSOnXmiU)
+Da click en la imagen para ver el video
+
+[![Ver video](screen.png)](https://youtu.be/RDcqSOnXmiU)
 
 
 #### Intrucciones
