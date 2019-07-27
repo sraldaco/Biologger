@@ -24,7 +24,7 @@ Da click en la imagen para ver el video
 
 
 1. Para descargar el branch <br />
-`git clone -b alex-iteracion2 --single-branch https://github.com/sraldaco/Biologger.git`
+`git clone https://github.com/sraldaco/Biologger.git`
 
 2. Crear la base de datos en postgresql en Mac o Linux (Busquen la versión alternativa para estos comandos en Windows)<br />
 `sudo -u postgres -i`<br />
